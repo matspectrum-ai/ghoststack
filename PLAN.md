@@ -1,6 +1,6 @@
 # GhostStack — Implementation Plan
 
-Versão: 0.4.0
+Versão: 0.5.0
 Status: Draft
 Branch: master
 Última revisão: autoplan (2026-07-30)
@@ -18,35 +18,35 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ## 3. Fases
 
-### FASE 16 — Performance & Optimization
+### FASE 16 — Performance & Optimization ✅
 - Perfil de memória com pprof
 - Startup time optimization
 - Benchmark suite contínua
 - Hot path profiling
 - Memory pool reutilização
 
-### FASE 17 — Security Hardening
+### FASE 17 — Security Hardening ✅
 - Audit logging estruturado (JSON)
 - Plugin sandboxing
 - Integrity checking com hash
 - Secure boot do daemon
 - Secret rotation
 
-### FASE 18 — Cross-Platform Real
+### FASE 18 — Cross-Platform Real ✅
 - Windows WFP firewall
 - macOS pf + NetworkExtension
 - Linux nftables + tun
 - Build matrix GitHub Actions
 - Platform abstraction layer
 
-### FASE 19 — UX & DX Improvement
+### FASE 19 — UX & DX Improvement ✅
 - Onboarding interativo
 - Documentação interativa
 - DX scorecard
 - Error messages melhorados
 - CLI help system
 
-### FASE 20 — Integration & Ecosystem
+### FASE 20 — Integration & Ecosystem ✅
 - REST API pública
 - TypeScript SDK
 - Webhook system
@@ -71,8 +71,7 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ## 6. Próximos Passos
 
-- Iniciar FASE 16 — Performance & Optimization
-- Continuar execução do milestone v0.4.0
+- Iniciar próxima milestone
 
 ## GSTACK REVIEW REPORT
 
@@ -104,5 +103,5 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ### Aprovação
 - **Status:** Aprovado para execução
-- **Próximo milestone:** v0.4.0 (FASEs 16+)
-- **Comando:** `/gsd-new-milestone v0.4.0`
+- **Próximo milestone:** v0.5.0
+- **Comando:** `/gsd-new-milestone v0.5.0`
