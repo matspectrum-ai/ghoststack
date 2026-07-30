@@ -35,3 +35,11 @@ func Load(path string) (RawConfig, error) {
 	}
 	return cfg, nil
 }
+
+func LoadFromString(data string) (RawConfig, error) {
+	var cfg RawConfig
+	if err := yaml.Unmarshal([]byte(data), &cfg); err != nil {
+		return cfg, fmt.Errorf("parse yaml: %w", err)
+	}
+	return cfg, nil
+}
