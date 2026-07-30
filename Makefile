@@ -1,4 +1,4 @@
-.PHONY: build test lint fmt vet clean ci help
+.PHONY: build test lint fmt vet clean ci fuzz benchmark help
 
 BINARY_NAME=ghost
 VERSION?=$(shell cat VERSION 2>/dev/null || echo 0.1.0)
@@ -15,6 +15,8 @@ help:
 	@echo "  make lint        Executa linter e formatação"
 	@echo "  make fmt          Aplica formatação automática"
 	@echo "  make vet          Executa go vet"
+	@echo "  make fuzz         Executa fuzz tests"
+	@echo "  make benchmark    Executa benchmarks"
 	@echo "  make clean        Remove artefatos de build"
 	@echo "  make ci           Pipeline local equivalente ao CI"
 
@@ -32,6 +34,12 @@ fmt:
 
 vet:
 	go vet ./...
+
+fuzz:
+	go test -fuzz=Fuzz -fuzztime=10s ./...
+
+benchmark:
+	go test -bench=. -benchmem ./...
 
 clean:
 	rm -rf bin/ dist/ tmp/
