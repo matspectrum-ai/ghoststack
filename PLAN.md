@@ -3,14 +3,15 @@
 Versão: 0.1.0
 Status: Draft
 Branch: master
+Última revisão: plan-eng-review (em andamento)
 
 ## 1. Contexto
 
-Plano inicial de implementação do GhostStack, derivado das especificações normativas docs/01 a docs/42 e da ADR-001.
+Plano de implementação do GhostStack, derivado das especificações normativas `docs/01..42` e da ADR-001.
 
 ## 2. Escopo
 
-Implementar o GhostStack seguindo as fases definidas no Documento 42 — Master Implementation Handoff.
+Implementar o GhostStack seguindo as fases do Documento 42 — Master Implementation Handoff, com fases curtas, verificáveis e com retroalimentação de testes a cada entrega.
 
 ## 3. Fases
 
