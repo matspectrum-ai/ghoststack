@@ -1,75 +1,65 @@
-# GhostStack v0.4.0 — Roadmap
+# GhostStack v1.0.0 — Roadmap
 
-Versão: 0.4.0
+Versão: 1.0.0
 Status: Em andamento
-Árvore: FASEs 16-20
+Árvore: FASEs 46-50
 
-## FASE 16 — Performance & Optimization
-
-Entregas:
-- Perfil de memória com pprof.
-- Startup time optimization.
-- Benchmark suite contínua.
-- Hot path profiling.
-- Memory pool reutilização.
-
-Critérios de aceite:
-- `ghost start` < 500ms.
-- Memória idle < 50MB.
-- Benchmarks passando.
-
-## FASE 17 — Security Hardening
+## FASE 46 — v1.0.0 Release Preparation
 
 Entregas:
-- Audit logging estruturado (JSON).
-- Plugin sandboxing.
-- Integrity checking com hash.
-- Secure boot do daemon.
-- Secret rotation.
+- Security patches.
+- Bug fixes.
+- Performance improvements.
+- Backward compatibility.
 
 Critérios de aceite:
-- Todos os eventos auditados.
-- Plugins isolados por processo.
-- Integrity check em boot.
+- Zero critical bugs.
+- Security patches aplicadas.
 
-## FASE 18 — Cross-Platform Real
+## FASE 47 — UX Final
 
 Entregas:
-- Windows WFP firewall.
-- macOS pf + NetworkExtension.
-- Linux nftables + tun.
-- Build matrix GitHub Actions.
-- Platform abstraction layer.
+- Design system final.
+- Component library final.
+- Accessibility final.
+- Performance final.
 
 Critérios de aceite:
-- Builds nativos por OS.
-- Firewall funcional em cada plataforma.
-- TUN device abstraction.
+- Design system consistente.
+- Component library reutilizável.
 
-## FASE 19 — UX & DX Improvement
+## FASE 48 — Ecossistema Final
 
 Entregas:
-- Onboarding interativo.
-- Documentação interativa.
-- DX scorecard.
-- Error messages melhorados.
-- CLI help system.
+- Plugin SDK final.
+- Integration catalog final.
+- Template gallery final.
+- Community support final.
 
 Critérios de aceite:
-- Novo usuário operacional em < 5min.
-- Docs cobrem 100% das APIs públicas.
-- DX score > 8/10.
+- SDK final.
+- Catalog com 50+ integrações.
 
-## FASE 20 — Integration & Ecosystem
+## FASE 49 — Operações Final
 
 Entregas:
-- REST API pública.
-- TypeScript SDK.
-- Webhook system.
-- CLI scripting.
-- Plugin marketplace preparação.
+- Monitoring final.
+- Alerting final.
+- Capacity planning final.
+- Cost optimization final.
 
 Critérios de aceite:
-- API documentada e testada.
-- SDK TypeScript funcional.
-- Webhooks configuráveis.
+- Dashboards operacionais.
+- Alertas configuráveis.
+
+## FASE 50 — Documentação Final
+
+Entregas:
+- Complete API reference.
+- Architecture diagrams.
+- Runbooks.
+- Migration guides.
+
+Critérios de aceite:
+- API coverage 100%.
+- 10+ runbooks.
