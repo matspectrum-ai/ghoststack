@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-30
+
+### Added
+- **API Key Auth** (F1): `internal/api/auth.go` com APIKeyStore (SHA-256 + salt), middleware `Authorization: Bearer`, `ghost apikey create|list|revoke`
+- **Public Bind** (F1): `ghost start --public` bind em `0.0.0.0`, `--api-key <name>` ativa auth
+- **SQLite migrations** (F1/F2): tabelas `api_keys`, `agents`, `commands`
+- **Agent Protocol** (F2): `internal/agent/` com registro, heartbeat, poll de comandos, execução e report
+- **API v2** (F2): `internal/api/v2/` com endpoints `/api/v2/agents/register`, `/heartbeat`, `/commands/pending`, `/commands/result`, list/detail
+- **Agent CLI** (F2): `ghost agent start --controller <url> --api-key <key>`
+- **Remote CLI** (F3): `ghost remote add|list|rm|exec|logs` com persistência em `~/.ghoststack/remotes.json`
+- **WebBridge** (F3): eventos de agent propagados via WebSocket hub
+
+### Changed
+- `internal/api/server.go`: suporte a key store, v2 router, flag public
+- `internal/storage/provider.go`: 10 novos métodos na interface (APIKey, Agent, Command)
+- `internal/storage/sqlite.go`: 3 novas migrations + implementação dos métodos
+- `internal/cli/start.go`: flags `--public` e `--api-key`
+- `internal/cli/root.go`: registra `apikey`, `agent`, `remote` commands
+
+### Fixed
+- N/A
+
 ## [0.4.0] - 2026-07-30
 
 ### Added

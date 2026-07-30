@@ -9,7 +9,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/ghoststack/ghoststack/internal/api/v2"
 	"github.com/ghoststack/ghoststack/internal/runtime"
+	"github.com/ghoststack/ghoststack/internal/storage"
 )
 
 type Server struct {
@@ -17,6 +19,10 @@ type Server struct {
 	hub       *WSHub
 	metrics   *MetricsCollector
 	tlsConfig *TLSConfig
+	keyStore  *APIKeyStore
+	public    bool
+	store     storage.StorageProvider
+	v2        *v2.Server
 }
 
 func NewServer(daemon *runtime.Daemon) *Server {
@@ -34,18 +40,24 @@ func NewServerWithTLS(daemon *runtime.Daemon, tlsCfg *TLSConfig) *Server {
 	return s
 }
 
-func (s *Server) Start(ctx context.Context, addr string) (*http.Server, error) {
-	mux := s.handler(ctx)
+func (s *Server) SetKeyStore(ks *APIKeyStore) {
+	s.keyStore = ks
+}
 
-	if s.tlsConfig != nil {
-		tlsCfg, err := LoadTLSConfig(s.tlsConfig)
-		if err != nil {
-			return nil, fmt.Errorf("tls config: %w", err)
-		}
-		return s.startTLS(ctx, addr, mux, tlsCfg)
+func (s *Server) SetStore(store storage.StorageProvider) {
+	s.store = store
+	s.v2 = v2.NewServer(store)
+}
+
+func (s *Server) SetPublic(v bool) {
+	s.public = v
+}
+
+func (s *Server) ListenAddr(addr string) string {
+	if s.public {
+		return addr
 	}
-
-	return s.startHTTP(ctx, addr, mux)
+	return addr
 }
 
 func (s *Server) handler(ctx context.Context) *http.ServeMux {
@@ -58,6 +70,22 @@ func (s *Server) handler(ctx context.Context) *http.ServeMux {
 	mux.HandleFunc("/api/providers", s.handleProviders)
 	mux.HandleFunc("/api/config", s.handleConfig)
 
+	if s.keyStore != nil {
+		authMW := AuthMiddleware(s.keyStore)
+		protected := func(h http.HandlerFunc) http.HandlerFunc {
+			return authMW(h).ServeHTTP
+		}
+		mux.HandleFunc("/api/status", protected(s.handleStatus))
+		mux.HandleFunc("/api/monitoring", protected(s.handleMonitoring))
+		mux.HandleFunc("/api/logs", protected(s.handleLogs))
+		mux.HandleFunc("/api/config", protected(s.handleConfig))
+		mux.HandleFunc("/api/providers", protected(s.handleProviders))
+	}
+
+	if s.v2 != nil {
+		mux.Handle("/api/v2/", s.v2)
+	}
+
 	go s.metrics.Collect(ctx)
 
 	if dashboardDir := os.Getenv("GHOSTSTACK_DASHBOARD_DIR"); dashboardDir != "" {
@@ -65,6 +93,20 @@ func (s *Server) handler(ctx context.Context) *http.ServeMux {
 	}
 
 	return mux
+}
+
+func (s *Server) Start(ctx context.Context, addr string) (*http.Server, error) {
+	mux := s.handler(ctx)
+
+	if s.tlsConfig != nil {
+		tlsCfg, err := LoadTLSConfig(s.tlsConfig)
+		if err != nil {
+			return nil, fmt.Errorf("tls config: %w", err)
+		}
+		return s.startTLS(ctx, addr, mux, tlsCfg)
+	}
+
+	return s.startHTTP(ctx, addr, mux)
 }
 
 func (s *Server) startHTTP(ctx context.Context, addr string, mux *http.ServeMux) (*http.Server, error) {

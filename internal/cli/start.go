@@ -21,6 +21,8 @@ func newStartCommand() *cobra.Command {
 	var force bool
 
 	var tls bool
+	var public bool
+	var apiKeyName string
 
 	cmd := &cobra.Command{
 		Use:   "start",
@@ -97,6 +99,18 @@ func newStartCommand() *cobra.Command {
 				server = api.NewServer(daemon)
 			}
 
+			if public {
+				server.SetPublic(true)
+			}
+
+			server.SetStore(store)
+
+			if apiKeyName != "" {
+				keyStore := api.NewAPIKeyStore(store)
+				server.SetKeyStore(keyStore)
+				fmt.Fprintf(os.Stdout, "API key name: %s\n", apiKeyName)
+			}
+
 			httpServer, err := server.Start(cmd.Context(), apiAddr)
 			if err != nil {
 				daemon.Stop(cmd.Context())
@@ -149,5 +163,7 @@ func newStartCommand() *cobra.Command {
 	cmd.Flags().StringVar(&providerName, "provider", "", "provider name (wireguard, tor, sing-box, unbound, socks5)")
 	cmd.Flags().BoolVar(&force, "force", false, "skip pre-flight diagnostics")
 	cmd.Flags().BoolVar(&tls, "tls", false, "enable HTTPS with auto-generated self-signed cert")
+	cmd.Flags().BoolVar(&public, "public", false, "bind to 0.0.0.0 (requires --api-key)")
+	cmd.Flags().StringVar(&apiKeyName, "api-key", "", "require API key auth with this key name")
 	return cmd
 }
