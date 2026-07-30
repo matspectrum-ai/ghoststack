@@ -8,16 +8,16 @@ import (
 )
 
 type HealthCheckResult struct {
-	Provider string
-	Healthy  bool
-	Message  string
+	Provider  string
+	Healthy   bool
+	Message   string
 	CheckedAt time.Time
 }
 
 type HealthChecker struct {
-	mu         sync.RWMutex
-	providers  map[string]HealthCheckFunc
-	results    map[string]HealthCheckResult
+	mu        sync.RWMutex
+	providers map[string]HealthCheckFunc
+	results   map[string]HealthCheckResult
 }
 
 type HealthCheckFunc func(ctx context.Context) (bool, string)

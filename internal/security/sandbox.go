@@ -3,7 +3,6 @@ package security
 import (
 	"context"
 	"fmt"
-	"os"
 	"syscall"
 	"unsafe"
 
@@ -11,11 +10,11 @@ import (
 )
 
 type SandboxPolicy struct {
-	AllowNetwork   bool
+	AllowNetwork    bool
 	AllowFilesystem bool
-	AllowedPaths   []string
-	AllowExec      bool
-	DeniedSyscalls []string
+	AllowedPaths    []string
+	AllowExec       bool
+	DeniedSyscalls  []string
 }
 
 type Sandbox interface {
@@ -92,7 +91,7 @@ func (s *sandboxImpl) applySeccomp(policy SandboxPolicy) error {
 	if policy.AllowExec {
 		whitelist = append(whitelist,
 			syscall.SYS_EXECVE,
-			syscall.SYS_EXECVEAT,
+			322, // SYS_EXECVEAT
 			syscall.SYS_CLONE,
 			syscall.SYS_FORK,
 			syscall.SYS_VFORK,
@@ -117,7 +116,8 @@ func (s *sandboxImpl) applySeccomp(policy SandboxPolicy) error {
 	filter := buildSeccompFilter(whitelist)
 
 	prog := &unix.SockFprog{
-		Filter: filter,
+		Len:    uint16(len(filter)),
+		Filter: &filter[0],
 	}
 
 	if err := unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0); err != nil {

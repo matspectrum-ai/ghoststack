@@ -40,8 +40,8 @@ func TestWireGuardProviderConfigValidation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			p := newWireGuardProvider(tt.config)
-			err := p.validateConfig()
+			wp := newWireGuardProvider(tt.config).(*wireGuardProvider)
+			err := wp.validateConfig()
 			if tt.wantErr && err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -53,13 +53,15 @@ func TestWireGuardProviderConfigValidation(t *testing.T) {
 }
 
 func TestWireGuardProviderDefaults(t *testing.T) {
-	p := newWireGuardProvider(WireGuardConfig{
+	wp := newWireGuardProvider(WireGuardConfig{
 		PrivateKey: "priv",
 		PublicKey:  "pub",
 		Endpoint:   "10.0.0.1:51820",
-	})
+	}).(*wireGuardProvider)
 
-	p.validateConfig()
+	wp.validateConfig()
+
+	p := wp
 
 	if p.config.MTU != 1420 {
 		t.Fatalf("expected MTU 1420, got %d", p.config.MTU)
@@ -75,7 +77,7 @@ func TestWireGuardProviderDefaults(t *testing.T) {
 }
 
 func TestWireGuardProviderBuildConfig(t *testing.T) {
-	p := newWireGuardProvider(WireGuardConfig{
+	wp := newWireGuardProvider(WireGuardConfig{
 		PrivateKey: "testprivkey",
 		PublicKey:  "testpubkey",
 		Endpoint:   "203.0.113.1:51820",
@@ -83,9 +85,9 @@ func TestWireGuardProviderBuildConfig(t *testing.T) {
 		MTU:        1420,
 		DNS:        []string{"1.1.1.1", "1.0.0.1"},
 		AllowedIPs: []string{"0.0.0.0/0"},
-	})
+	}).(*wireGuardProvider)
 
-	cfg := p.buildConfig()
+	cfg := wp.buildConfig()
 	if cfg == "" {
 		t.Fatal("expected non-empty config")
 	}
@@ -105,14 +107,14 @@ func TestWireGuardProviderBuildConfig(t *testing.T) {
 }
 
 func TestWireGuardProviderWriteConfig(t *testing.T) {
-	p := newWireGuardProvider(WireGuardConfig{
+	wp := newWireGuardProvider(WireGuardConfig{
 		PrivateKey: "testprivkey",
 		PublicKey:  "testpubkey",
 		Endpoint:   "203.0.113.1:51820",
 		Address:    "10.0.0.2/24",
-	})
+	}).(*wireGuardProvider)
 
-	path, err := p.writeConfig()
+	path, err := wp.writeConfig()
 	if err != nil {
 		t.Fatalf("write config: %v", err)
 	}
@@ -139,28 +141,28 @@ func TestWireGuardProviderStartStop(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	p := newWireGuardProvider(WireGuardConfig{
+	wp := newWireGuardProvider(WireGuardConfig{
 		PrivateKey: "testprivkey",
 		PublicKey:  "testpubkey",
 		Endpoint:   "203.0.113.1:51820",
 		Address:    "10.0.0.2/24",
-	})
+	}).(*wireGuardProvider)
 
-	err := p.StartWithConfig(ctx, "")
+	err := wp.StartWithConfig(ctx, "")
 	if err != nil {
 		t.Fatalf("start: %v", err)
 	}
 
-	if !p.running {
+	if !wp.running {
 		t.Fatal("expected running after start")
 	}
 
-	err = p.Stop(ctx)
+	err = wp.Stop(ctx)
 	if err != nil {
 		t.Fatalf("stop: %v", err)
 	}
 
-	if p.running {
+	if wp.running {
 		t.Fatal("expected stopped after stop")
 	}
 }

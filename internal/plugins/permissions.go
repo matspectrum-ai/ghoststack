@@ -3,16 +3,16 @@ package plugins
 import "fmt"
 
 var knownCapabilities = map[string]struct{}{
-	"vpn.provider":      {},
-	"proxy.provider":    {},
-	"dns.provider":      {},
-	"firewall.provider": {},
-	"gateway.backend":   {},
-	"runtime.provider":  {},
-	"dashboard.widget":  {},
-	"auth.provider":     {},
-	"storage.provider":  {},
-	"metrics.provider":  {},
+	"vpn.provider":          {},
+	"proxy.provider":        {},
+	"dns.provider":          {},
+	"firewall.provider":     {},
+	"gateway.backend":       {},
+	"runtime.provider":      {},
+	"dashboard.widget":      {},
+	"auth.provider":         {},
+	"storage.provider":      {},
+	"metrics.provider":      {},
 	"notification.provider": {},
 }
 

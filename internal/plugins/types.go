@@ -5,45 +5,45 @@ import "context"
 type PluginState string
 
 const (
-	PluginStateDiscovered PluginState = "discovered"
-	PluginStateValidated  PluginState = "validated"
-	PluginStateLoaded     PluginState = "loaded"
+	PluginStateDiscovered  PluginState = "discovered"
+	PluginStateValidated   PluginState = "validated"
+	PluginStateLoaded      PluginState = "loaded"
 	PluginStateInitialized PluginState = "initialized"
-	PluginStateEnabled    PluginState = "enabled"
-	PluginStateRunning    PluginState = "running"
-	PluginStateStopped    PluginState = "stopped"
-	PluginStateFailed     PluginState = "failed"
-	PluginStateRemoved    PluginState = "removed"
+	PluginStateEnabled     PluginState = "enabled"
+	PluginStateRunning     PluginState = "running"
+	PluginStateStopped     PluginState = "stopped"
+	PluginStateFailed      PluginState = "failed"
+	PluginStateRemoved     PluginState = "removed"
 )
 
 type PluginManifest struct {
-	ID          string
-	Name        string
-	Version     string
-	Author      string
-	SDKVersion  string
-	Entry       string
-	Description string
-	License     string
+	ID           string
+	Name         string
+	Version      string
+	Author       string
+	SDKVersion   string
+	Entry        string
+	Description  string
+	License      string
 	Capabilities []string
 	Permissions  []string
-	Dependencies  map[string]string
-	Resources     PluginResources
+	Dependencies map[string]string
+	Resources    PluginResources
 }
 
 type PluginResources struct {
-	Memory string
-	CPU    string
+	Memory  string
+	CPU     string
 	Network bool
 }
 
 type PluginContext struct {
-	Logger    Logger
-	Config    ConfigAPI
-	Events    EventAPI
-	Storage   StorageAPI
-	Secrets   SecretAPI
-	Health    HealthAPI
+	Logger  Logger
+	Config  ConfigAPI
+	Events  EventAPI
+	Storage StorageAPI
+	Secrets SecretAPI
+	Health  HealthAPI
 }
 
 type Logger interface {

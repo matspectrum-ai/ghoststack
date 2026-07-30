@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-07-30
+
+### Added
+- **Secrets Manager** (P1): AES-256-GCM + argon2id key derivation, `ghost secrets init|set|get|list|delete`, integrado com `ghost init --passphrase`
+- **TLS Nativo** (P2): Auto-cert ECDSA P256 auto-assinado, `ghost start --tls`, HTTPS redirect :8443, WSS automático
+- **SQLite Storage** (P3): CGO-free (modernc.org/sqlite), WAL mode, migrations, persistência de runtime/provider/audit
+- **Systemd Service** (P4): `ghost service install|uninstall|enable|disable|status` com template de unit com sandboxing
+- **Kill Switch v2** (P5): ICMP block, IPv6 rules, DNS force, leak detection (DNS/ICMP/IPv6), `ghost killswitch enable|disable|status|leak-test`
+- **CI/CD** (P6): GitHub Actions (lint/test/build matrix), `.golangci.yml`, `ghost version`, Makefile aprimorado
+- **Docker** (P7): Dockerfile multi-stage (alpine runtime com nftables/wg-tools), docker-compose, `.dockerignore`
+- **Audit + Privacy** (P8): `ghost audit privacy|security|all` com 15 checks, score, `STATUS.md`
+
+### Changed
+- `internal/runtime/daemon.go`: storage integration, audit log, `Storage()`, `ConfigString()`
+- `internal/platform/linux/firewall.go`: IPv6, ICMP block, DNS force, input chain
+- `internal/security/killswitch_impl.go`: `WithDNSForce()`, `WithStorage()`, `Status()`, `RunLeakTest()`
+- `internal/cli/start.go`: `--tls` flag, auto-init storage
+- `internal/config/loader.go`: `ProfileSpec.Config`, template with TLS section
+
+### Fixed
+- `internal/security/sandbox.go`: unused `"os"` import, SockFprog.Filter pointer
+- `internal/security/secureboot.go`: unused `prevHash`/`newHash` variables
+- `internal/runtime/daemon.go`: `event.Data` → `event.Payload`
+- `internal/cli/diagnose.go`: `syscall.Prctl` → `unix.Prctl`
+- `internal/cli/service.go`: `cmd` variable shadowing, unused `"strings"` import
+- `internal/providers/wireguard_test.go`: interface type assertions
+- `internal/monitoring`: duplicate `Alert` type removed
+- `go.sum` regenerated for modernc.org/sqlite compatibility
+
 ## [0.3.0] - 2026-07-30
 
 ### Added

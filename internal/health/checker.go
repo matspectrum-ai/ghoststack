@@ -10,8 +10,8 @@ import (
 type HealthStatus string
 
 const (
-	HealthUp      HealthStatus = "up"
-	HealthDown    HealthStatus = "down"
+	HealthUp       HealthStatus = "up"
+	HealthDown     HealthStatus = "down"
 	HealthDegraded HealthStatus = "degraded"
 )
 
@@ -25,7 +25,7 @@ type Check struct {
 }
 
 type Checker struct {
-	mu      sync.RWMutex
+	mu     sync.RWMutex
 	checks map[string]CheckFunc
 }
 

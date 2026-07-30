@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  ghoststack:
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-0.0.0}
+        COMMIT: ${COMMIT:-unknown}
+        BUILD_TIME: ${BUILD_TIME:-unknown}
+    image: ghoststack:latest
+    container_name: ghoststack
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+      - SYS_PTRACE
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - ./config:/etc/ghoststack:ro
+      - ghoststack-data:/var/lib/ghoststack
+    environment:
+      - GHOSTSTACK_DASHBOARD_DIR=/usr/local/share/ghoststack/dashboard
+      - TZ=UTC
+    command: ["start", "--config", "/etc/ghoststack/config.yaml"]
+
+volumes:
+  ghoststack-data:

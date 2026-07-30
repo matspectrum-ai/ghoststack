@@ -14,30 +14,30 @@ import (
 type ProcessState string
 
 const (
-	ProcessStopped   ProcessState = "stopped"
-	ProcessRunning   ProcessState = "running"
-	ProcessFailed    ProcessState = "failed"
+	ProcessStopped ProcessState = "stopped"
+	ProcessRunning ProcessState = "running"
+	ProcessFailed  ProcessState = "failed"
 )
 
 type ProcessManager struct {
-	mu        sync.RWMutex
-	cmd       *exec.Cmd
-	state     ProcessState
-	pid       int
-	cancel    context.CancelFunc
-	done      chan struct{}
-	err       error
-	stopFn    func()
-	stdout    io.Writer
-	stderr    io.Writer
+	mu     sync.RWMutex
+	cmd    *exec.Cmd
+	state  ProcessState
+	pid    int
+	cancel context.CancelFunc
+	done   chan struct{}
+	err    error
+	stopFn func()
+	stdout io.Writer
+	stderr io.Writer
 }
 
 type ProcessConfig struct {
-	Name       string
-	Args       []string
-	Env        []string
-	Stdout     io.Writer
-	Stderr     io.Writer
+	Name   string
+	Args   []string
+	Env    []string
+	Stdout io.Writer
+	Stderr io.Writer
 }
 
 func NewProcessManager() *ProcessManager {

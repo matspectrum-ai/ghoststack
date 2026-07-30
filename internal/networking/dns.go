@@ -2,9 +2,12 @@ package networking
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 )
+
+var ErrResolverNotStarted = errors.New("resolver not started")
 
 type Resolver interface {
 	SetServers(ctx context.Context, servers []string) error
@@ -13,10 +16,10 @@ type Resolver interface {
 }
 
 type resolver struct {
-	mu          sync.RWMutex
-	servers     []string
-	interface_  string
-	backupPath  string
+	mu         sync.RWMutex
+	servers    []string
+	interface_ string
+	backupPath string
 }
 
 func newResolver() Resolver {

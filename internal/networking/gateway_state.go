@@ -12,12 +12,12 @@ var (
 )
 
 type gatewayState struct {
-	mu       sync.RWMutex
-	running  bool
-	config   string
-	started  int64
-	stopped  int64
-	errors   []string
+	mu      sync.RWMutex
+	running bool
+	config  string
+	started int64
+	stopped int64
+	errors  []string
 }
 
 func newGatewayState() *gatewayState {

@@ -17,15 +17,15 @@ var (
 )
 
 type WireGuardConfig struct {
-	Interface          string   `yaml:"interface"`
-	Endpoint           string   `yaml:"endpoint"`
-	PrivateKey         string   `yaml:"private_key"`
-	PublicKey          string   `yaml:"public_key"`
-	AllowedIPs         []string `yaml:"allowed_ips"`
-	DNS                []string `yaml:"dns"`
-	PersistentKeepalive int     `yaml:"persistent_keepalive"`
-	MTU                int      `yaml:"mtu"`
-	Address            string   `yaml:"address"`
+	Interface           string   `yaml:"interface"`
+	Endpoint            string   `yaml:"endpoint"`
+	PrivateKey          string   `yaml:"private_key"`
+	PublicKey           string   `yaml:"public_key"`
+	AllowedIPs          []string `yaml:"allowed_ips"`
+	DNS                 []string `yaml:"dns"`
+	PersistentKeepalive int      `yaml:"persistent_keepalive"`
+	MTU                 int      `yaml:"mtu"`
+	Address             string   `yaml:"address"`
 }
 
 type wireGuardProvider struct {

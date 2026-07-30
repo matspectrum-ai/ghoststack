@@ -1,0 +1,48 @@
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - bodyclose
+    - gosec
+    - misspell
+    - prealloc
+    - revive
+    - whitespace
+
+linters-settings:
+  gosec:
+    excludes:
+      - G204
+      - G402
+  revive:
+    rules:
+      - name: exported
+        severity: warning
+      - name: blank-imports
+      - name: context-as-argument
+      - name: error-return
+      - name: error-strings
+      - name: increment-decrement
+      - name: var-declaration
+      - name: range
+      - name: receiver-naming
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gosec
+        - errcheck
+        - bodyclose
+    - path: internal/platform/
+      linters:
+        - gosec

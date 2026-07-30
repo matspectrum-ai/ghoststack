@@ -56,10 +56,10 @@ func (v Version) CompatibleWith(other Version) bool {
 }
 
 type ComponentVersion struct {
-	Core         Version
-	ConfigSchema int
+	Core           Version
+	ConfigSchema   int
 	DatabaseSchema int
-	PluginAPI    int
+	PluginAPI      int
 }
 
 type VersionResolver struct {

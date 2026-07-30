@@ -9,10 +9,10 @@ import (
 )
 
 type Webhook struct {
-	ID      string
-	URL     string
-	Secret  string
-	Events  []string
+	ID     string
+	URL    string
+	Secret string
+	Events []string
 }
 
 type WebhookManager struct {

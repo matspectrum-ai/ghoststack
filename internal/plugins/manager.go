@@ -7,16 +7,16 @@ import (
 )
 
 type pluginEntry struct {
-	state   PluginState
-	plugin  Plugin
+	state    PluginState
+	plugin   Plugin
 	manifest PluginManifest
-	loader  PluginLoader
+	loader   PluginLoader
 }
 
 type pluginManager struct {
-	mu         sync.RWMutex
-	plugins    map[string]*pluginEntry
-	validator  PluginValidator
+	mu           sync.RWMutex
+	plugins      map[string]*pluginEntry
+	validator    PluginValidator
 	discoverDirs []string
 }
 
@@ -90,10 +90,10 @@ func (m *pluginManager) Load(ctx context.Context, pluginPath string) (Plugin, er
 	}
 
 	m.plugins[manifest.ID] = &pluginEntry{
-		state:   PluginStateLoaded,
-		plugin:  plugin,
+		state:    PluginStateLoaded,
+		plugin:   plugin,
 		manifest: manifest,
-		loader:  &defaultPluginLoader{},
+		loader:   &defaultPluginLoader{},
 	}
 
 	return plugin, nil

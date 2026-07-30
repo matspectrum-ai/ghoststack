@@ -9,7 +9,7 @@ type MetricsRecorder interface {
 
 type NoopMetrics struct{}
 
-func (NoopMetrics) Increment(_ string)          {}
+func (NoopMetrics) Increment(_ string)                 {}
 func (NoopMetrics) ObserveLatency(_ string, _ float64) {}
 
 type EventMetrics struct {

@@ -13,13 +13,13 @@ type RouteTable interface {
 }
 
 var (
-	ErrRouteNotFound     = fmt.Errorf("route not found")
+	ErrRouteNotFound      = fmt.Errorf("route not found")
 	ErrRouteAlreadyExists = fmt.Errorf("route already exists")
 )
 
 type routeTable struct {
-	mu      sync.RWMutex
-	routes  map[string]string
+	mu     sync.RWMutex
+	routes map[string]string
 }
 
 func newRouteTable() *routeTable {

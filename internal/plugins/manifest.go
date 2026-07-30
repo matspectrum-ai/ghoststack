@@ -10,10 +10,10 @@ import (
 )
 
 type PluginManifestPayload struct {
-	Capabilities []string `yaml:"capabilities"`
-	Permissions  []string `yaml:"permissions"`
-	Dependencies  map[string]string `yaml:"dependencies"`
-	Resources     PluginResources `yaml:"resources"`
+	Capabilities []string          `yaml:"capabilities"`
+	Permissions  []string          `yaml:"permissions"`
+	Dependencies map[string]string `yaml:"dependencies"`
+	Resources    PluginResources   `yaml:"resources"`
 }
 
 func ParseManifest(path string) (PluginManifest, error) {

@@ -7,7 +7,7 @@ import (
 )
 
 func TestTUNLifecycle(t *testing.T) {
-	tun := newTUN()
+	tun := NewTUN()
 
 	if err := tun.Up(context.Background()); !errors.Is(err, ErrTUNNotCreated) {
 		t.Fatalf("expected ErrTUNNotCreated, got %v", err)

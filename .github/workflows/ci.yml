@@ -1,29 +1,67 @@
-name: Go CI
+name: CI
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [master, main, release/*]
   pull_request:
-    branches: [ master, main ]
+    branches: [master, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-and-test:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22.x"
+          go-version: "1.22"
           cache: true
-      - name: Verify module
-        run: go mod verify
-      - name: Build
-        run: make build
-      - name: Vet
-        run: make vet
-      - name: Lint
+      - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
-      - name: Test
-        run: make test
+          args: --timeout=5m
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: true
+      - name: Install dependencies
+        run: go mod tidy
+      - name: Unit tests
+        run: go test -count=1 -race -coverprofile=coverage.out -covermode=atomic ./...
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./coverage.out
+          fail_ci_if_error: false
+
+  build:
+    name: Build
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        arch: [amd64, arm64]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: true
+      - name: Build (${{ matrix.arch }})
+        run: |
+          GOARCH=${{ matrix.arch }} go build -o ghost-${{ matrix.arch }} ./cmd/ghost
+      - name: Smoke test
+        run: |
+          chmod +x ghost-${{ matrix.arch }}
+          ./ghost-${{ matrix.arch }} version

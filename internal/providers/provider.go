@@ -5,9 +5,9 @@ import "context"
 type ProviderState string
 
 const (
-	ProviderStopped   ProviderState = "stopped"
-	ProviderRunning   ProviderState = "running"
-	ProviderFailed    ProviderState = "failed"
+	ProviderStopped ProviderState = "stopped"
+	ProviderRunning ProviderState = "running"
+	ProviderFailed  ProviderState = "failed"
 )
 
 type Provider interface {

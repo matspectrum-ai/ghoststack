@@ -6,8 +6,8 @@ import (
 )
 
 type SupportPolicy struct {
-	Version string
-	EOL     string
+	Version  string
+	EOL      string
 	Backport bool
 }
 

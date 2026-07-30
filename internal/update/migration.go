@@ -8,9 +8,9 @@ import (
 )
 
 type Migration struct {
-	ID      string
-	Version string
-	Apply   func(ctx context.Context) error
+	ID       string
+	Version  string
+	Apply    func(ctx context.Context) error
 	Rollback func(ctx context.Context) error
 }
 

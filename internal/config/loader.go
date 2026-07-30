@@ -16,8 +16,9 @@ type RawConfig struct {
 }
 
 type ProfileSpec struct {
-	Providers []string         `yaml:"providers"`
-	Options   map[string]any   `yaml:"options"`
+	Providers []string       `yaml:"providers"`
+	Options   map[string]any `yaml:"options"`
+	Config    map[string]any `yaml:"config"`
 }
 
 type SecretSpec struct {
