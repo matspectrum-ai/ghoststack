@@ -16,3 +16,16 @@ Thumbs.db
 .parcel-cache/
 .vite/
 .ghost/
+bin/
+tmp/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
