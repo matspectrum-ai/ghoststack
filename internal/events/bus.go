@@ -2,24 +2,32 @@ package events
 
 import (
 	"context"
-	"fmt"
+	"reflect"
 	"sync"
+	"time"
 )
 
 type Event struct {
-	Type      string
-	Source    string
-	Timestamp int64
-	Payload   map[string]interface{}
+	Type      string                 `json:"type"`
+	Source    string                 `json:"source,omitempty"`
+	Timestamp int64                  `json:"timestamp"`
+	Payload   map[string]interface{} `json:"payload,omitempty"`
 }
 
 type EventHandler func(ctx context.Context, event Event) error
 
+type wildcardEntry struct {
+	pattern string
+	handler EventHandler
+}
+
 type EventBus struct {
 	mu         sync.RWMutex
 	handlers   map[string][]EventHandler
+	wildcards  []wildcardEntry
 	buffer     []Event
 	maxBuffer  int
+	middleware BusMiddleware
 }
 
 func NewEventBus(maxBuffer int) *EventBus {
@@ -35,14 +43,20 @@ func NewEventBus(maxBuffer int) *EventBus {
 
 func (b *EventBus) Publish(ctx context.Context, event Event) error {
 	if event.Type == "" {
-		return fmt.Errorf("event type must not be empty")
+		return ErrEmptyEventType
+	}
+
+	if b.middleware != nil {
+		if err := b.middleware(ctx, event); err != nil {
+			return err
+		}
 	}
 
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
 	if event.Timestamp == 0 {
-		event.Timestamp = nowUnix()
+		event.Timestamp = time.Now().UnixNano()
 	}
 
 	b.buffer = append(b.buffer, event)
@@ -53,6 +67,12 @@ func (b *EventBus) Publish(ctx context.Context, event Event) error {
 	for _, handler := range b.handlers[event.Type] {
 		if err := handler(ctx, event); err != nil {
 			return err
+		}
+	}
+
+	for _, entry := range b.wildcards {
+		if entry.handler != nil {
+			_ = entry.handler(ctx, event)
 		}
 	}
 
@@ -71,11 +91,19 @@ func (b *EventBus) Unsubscribe(eventType string, handler EventHandler) {
 
 	handlers := b.handlers[eventType]
 	for i, h := range handlers {
-		if &h == &handler {
+		if funcPtr(h) == funcPtr(handler) {
 			b.handlers[eventType] = append(handlers[:i], handlers[i+1:]...)
 			break
 		}
 	}
+}
+
+func funcPtr(f EventHandler) uintptr {
+	v := reflect.ValueOf(f)
+	if v.IsNil() {
+		return 0
+	}
+	return v.Pointer()
 }
 
 func (b *EventBus) Buffer() []Event {
@@ -84,6 +112,8 @@ func (b *EventBus) Buffer() []Event {
 	return append([]Event(nil), b.buffer...)
 }
 
-func nowUnix() int64 {
-	return 0
+func (b *EventBus) SetMiddleware(middleware BusMiddleware) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	b.middleware = middleware
 }
