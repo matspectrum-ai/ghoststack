@@ -1,89 +1,75 @@
-# GhostStack v0.3.0 — Roadmap
+# GhostStack v0.4.0 — Roadmap
 
-Versão: 0.3.0
+Versão: 0.4.0
 Status: Em andamento
-Árvore: FASEs 10-15
+Árvore: FASEs 16-20
 
-## FASE 10 — Plugin System
-
-Entregas:
-- Plugin Manager com discovery em `/usr/lib/ghoststack/plugins`, `~/.local/share/ghoststack/plugins`, `./plugins`.
-- Manifest parser e validação de compatibilidade SDK/ABI.
-- Permissions model declarativa: network, filesystem, secrets, system, runtime, events.
-- Plugin SDK base em Go.
-- Sandbox básico por processo separado.
-- Hot reload e rollback de plugins.
-
-Critérios de aceite:
-- Plugin externo instalável sem modificar o Core.
-- Manifest inválido impede carregamento.
-- Permissões não declaradas não são concedidas.
-
-## FASE 11 — Update System & Migration
+## FASE 16 — Performance & Optimization
 
 Entregas:
-- Update Manager com canais stable, beta, nightly.
-- Version Resolver SemVer.
-- Migration Engine para configuração e dados.
-- Rollback automático em falha.
-- Update Manifest com checksum e assinatura.
+- Perfil de memória com pprof.
+- Startup time optimization.
+- Benchmark suite contínua.
+- Hot path profiling.
+- Memory pool reutilização.
 
 Critérios de aceite:
-- `ghost update` executa migração segura.
-- Falha em migração reverte para versão anterior.
-- Rollback manual via `ghost rollback` funciona.
+- `ghost start` < 500ms.
+- Memória idle < 50MB.
+- Benchmarks passando.
 
-## FASE 12 — Provider Hardening
+## FASE 17 — Security Hardening
 
 Entregas:
-- OpenVPN provider cross-platform.
-- DoH/DoT DNS providers.
-- Firewall real por SO: Linux nftables, Windows WFP, macOS pf.
-- Health checks por provider.
-- Fallback automático entre providers.
+- Audit logging estruturado (JSON).
+- Plugin sandboxing.
+- Integrity checking com hash.
+- Secure boot do daemon.
+- Secret rotation.
 
 Critérios de aceite:
-- Providers possuem Health() e Status().
-- Falha de VPN ativa fallback automático.
-- Firewall bloqueia tráfego fora da política.
+- Todos os eventos auditados.
+- Plugins isolados por processo.
+- Integrity check em boot.
 
-## FASE 13 — Event Bus & Observability
+## FASE 18 — Cross-Platform Real
 
 Entregas:
-- Event Bus real pub/sub.
-- OpenTelemetry básico.
-- Métricas Prometheus por módulo.
-- Tracing distribuído.
-- Correlação por correlationId.
+- Windows WFP firewall.
+- macOS pf + NetworkExtension.
+- Linux nftables + tun.
+- Build matrix GitHub Actions.
+- Platform abstraction layer.
 
 Critérios de aceite:
-- Plugins publicam/consomem eventos via contratos.
-- Dashboard consome métricas via API oficial.
-- Logs são sanitizados e padronizados em JSON.
+- Builds nativos por OS.
+- Firewall funcional em cada plataforma.
+- TUN device abstraction.
 
-## FASE 14 — CLI Expansion
+## FASE 19 — UX & DX Improvement
 
 Entregas:
-- ghost plugin install/remove/update.
-- ghost config validate/reload.
-- ghost provider list/select.
-- ghost update --dry-run/rollback.
-- ghost doctor.
+- Onboarding interativo.
+- Documentação interativa.
+- DX scorecard.
+- Error messages melhorados.
+- CLI help system.
 
 Critérios de aceite:
-- Todo fluxo de gerenciamento via CLI.
-- `ghost doctor` valida dependências e permissões.
+- Novo usuário operacional em < 5min.
+- Docs cobrem 100% das APIs públicas.
+- DX score > 8/10.
 
-## FASE 15 — Dashboard Hardening
+## FASE 20 — Integration & Ecosystem
 
 Entregas:
-- WebSocket para eventos real-time.
-- Telas funcionais de configuração e logs.
-- Mobile responsive.
-- PWA support.
-- Autenticação local obrigatória.
+- REST API pública.
+- TypeScript SDK.
+- Webhook system.
+- CLI scripting.
+- Plugin marketplace preparação.
 
 Critérios de aceite:
-- Dashboard disponível em localhost:9090.
-- Eventos refletem em tempo real sem reload.
-- Interface utilizável em telas pequenas.
+- API documentada e testada.
+- SDK TypeScript funcional.
+- Webhooks configuráveis.

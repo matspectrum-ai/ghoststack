@@ -1,25 +1,24 @@
-# GhostStack v0.3.0 — State
+# GhostStack v0.4.0 — State
 
-Versão do milestone: 0.3.0
-Status: Em andamento
+Versão do milestone: 0.4.0
+Status: Reset
 Última atualização: 2026-07-30
 
 ## Progresso das Fases
 
 | Fase | Nome | Status | Entregues | Bloqueadores |
 |------|------|--------|-----------|--------------|
-| 10 | Plugin System | Concluída | 6/6 | Nenhum |
-| 11 | Update System & Migration | Concluída | 5/5 | Nenhum |
-| 12 | Provider Hardening | Concluída | 4/4 | Nenhum |
-| 13 | Event Bus & Observability | Planejada | 0/5 | Nenhum |
-| 14 | CLI Expansion | Concluída | 4/4 | Nenhum |
-| 15 | Dashboard Hardening | Concluída | 4/4 | Nenhum |
+| 16 | Performance & Optimization | Planejada | 0/4 | Nenhum |
+| 17 | Security Hardening | Planejada | 0/4 | Nenhum |
+| 18 | Cross-Platform Real | Planejada | 0/3 | Nenhum |
+| 19 | UX & DX Improvement | Planejada | 0/3 | Nenhum |
+| 20 | Integration & Ecosystem | Planejada | 0/3 | Nenhum |
 
 ## Progresso Global
 
-- Fases concluídas: 5/6
-- Entregues: 23
-- Pendentes: 5
+- Fases concluídas: 0/5
+- Entregues: 0
+- Pendentes: 17
 - Em andamento: 0
 
 ## Bloqueadores Globais
@@ -28,7 +27,5 @@ Status: Em andamento
 
 ## Notas
 
-- FASE 10-12 implementadas antes do milestone v0.3.0.
-- FASE 14-15 implementadas nesta sessão.
-- FASE 13 (Event Bus & Observability) pendente.
-- Ordem de execução sugerida: FASE 10 → FASE 11 → FASE 12 → FASE 13 → FASE 14 → FASE 15.
+- Estado resetado para início do milestone v0.4.0.
+- Ordem de execução sugerida: FASE 16 → FASE 17 → FASE 18 → FASE 19 → FASE 20.

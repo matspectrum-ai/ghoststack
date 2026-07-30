@@ -1,7 +1,7 @@
 # GhostStack — Implementation Plan
 
-Versão: 0.3.0
-Status: Concluído
+Versão: 0.4.0
+Status: Draft
 Branch: master
 Última revisão: autoplan (2026-07-30)
 

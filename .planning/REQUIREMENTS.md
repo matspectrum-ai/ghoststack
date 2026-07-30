@@ -1,62 +1,60 @@
-# GhostStack v0.3.0 — Requirements
+# GhostStack v0.4.0 — Requirements
 
-Versão: 0.3.0
+Versão: 0.4.0
 Status: Em andamento
-Base: PLAN.md FASEs 10-15
+Última atualização: 2026-07-30
 
-## REQ-01 — Plugin System (FASE 10)
+## Requisitos Funcionais
 
-- Plugin Manager com descoberta em diretórios oficiais.
-- Manifest parser com validação de campos obrigatórios.
-- Permissions model: network, filesystem, secrets, system, events.
-- Plugin SDK base em Go com ciclo de vida completo.
-- Sandbox básico por processo separado.
-- Assinatura digital opcional de plugins.
+### RF01 — Performance & Optimization
+- Perfil de memória < 50MB em idle.
+- Startup time < 500ms.
+- Latência de comando CLI < 100ms.
+- Benchmark suite contínua.
 
-## REQ-02 — Update System & Migration (FASE 11)
+### RF02 — Segurança Avançada
+- Audit logging estruturado (JSON).
+- Plugin sandboxing (seccomp/AppArmor).
+- Integrity checking com hash verification.
+- Secure boot do daemon.
 
-- Update Manager com canais stable, beta, nightly.
-- Version Resolver compatível com SemVer.
-- Migration Engine para configuração e dados.
-- Rollback automático em falha de migração.
-- Update Manifest com checksum e assinatura.
+### RF03 — Cross-Platform Real
+- Windows: WFP firewall, TUN driver.
+- macOS: pf, NetworkExtension.
+- Linux: nftables, iptables, tun.
+- Builds nativos por plataforma.
 
-## REQ-03 — Provider Hardening (FASE 12)
+### RF04 — Experiência de Usuário
+- Onboarding interativo.
+- Documentação interativa.
+- DX scorecard automatizado.
+- Error messages user-friendly.
 
-- OpenVPN provider compatível com arquitetura cross-platform.
-- DoH/DoT DNS providers com fallback automático.
-- Firewall real: nftables, iptables, pf por plataforma.
-- Health checks em todos os providers.
-- Fallback automático entre providers.
+### RF05 — Integração & Ecossistema
+- REST API pública.
+- TypeScript SDK para plugins.
+- Webhook system.
+- CLI scripting interface.
 
-## REQ-04 — Event Bus & Observability (FASE 13)
+## Requisitos Não-Funcionais
 
-- Event Bus real pub/sub com correlation IDs.
-- OpenTelemetry básico integrado.
-- Métricas Prometheus padronizadas por módulo.
-- Tracing distribuído opcional.
-- Health endpoints: /health, /ready, /alive.
+### RNF01 — Performance
+- P95 latency < 200ms para API calls.
+- CPU usage < 5% em idle.
+- Bundle dashboard < 200KB gzipped.
 
-## REQ-05 — CLI Expansion (FASE 14)
+### RNF02 — Segurança
+- CVE scanning automatizado.
+- Dependency pinning.
+- Secret scanning em CI.
+- SAST/DAST pipeline.
 
-- ghost plugin install/remove/update.
-- ghost config validate/reload.
-- ghost provider list/select.
-- ghost update --dry-run/rollback.
-- ghost doctor e ghost backup/restore.
+### RNF03 — Confiabilidade
+- Uptime 99.9% do daemon.
+- Zero data loss em crash.
+- Graceful degradation.
 
-## REQ-06 — Dashboard Hardening (FASE 15)
-
-- WebSocket para eventos real-time.
-- Telas funcionais de configuração e logs.
-- Mobile responsive com redesign das telas.
-- PWA support offline.
-- Autenticação local obrigatória.
-
-## Requisitos Transversais
-
-- Cobertura mínima: Core 95%, Plugins 90%, CLI 85%.
-- Todo módulo novo deve expor health checks.
-- Sanitização de logs obrigatória.
-- CI multi-plataforma: Linux amd64, Windows amd64, macOS amd64/arm64.
-- Documentação atualizada e exemplos de plugin.
+### RNF04 — Manutenibilidade
+- Cobertura de testes > 80%.
+- Documentação coverage 100% de APIs públicas.
+- Change log automatizado.
