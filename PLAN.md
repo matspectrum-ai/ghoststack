@@ -163,4 +163,3 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - **Status:** Aprovado para execução
 - **Próximo milestone:** v0.3.0 (FASEs 10-12)
 - **Comando:** `/gsd-new-milestone v0.3.0`
-estone v0.3.0`
