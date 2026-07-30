@@ -21,7 +21,7 @@ func (r *eventRecorder) Handle(ctx context.Context, event Event) error {
 
 func TestDaemonStartStopLifecycle(t *testing.T) {
 	rec := newEventRecorder()
-	d := NewDaemon(rec.Handle)
+	d := NewDaemon("", rec.Handle)
 
 	if err := d.Start(context.Background()); err != nil {
 		t.Fatalf("start: %v", err)
@@ -47,7 +47,7 @@ func TestDaemonStartStopLifecycle(t *testing.T) {
 }
 
 func TestDaemonDoubleStart(t *testing.T) {
-	d := NewDaemon(nil)
+	d := NewDaemon("", nil)
 	if err := d.Start(context.Background()); err != nil {
 		t.Fatalf("first start: %v", err)
 	}
@@ -57,7 +57,7 @@ func TestDaemonDoubleStart(t *testing.T) {
 }
 
 func TestDaemonStringStates(t *testing.T) {
-	d := NewDaemon(nil)
+	d := NewDaemon("", nil)
 	if d.State() != StateIdle {
 		t.Fatalf("expected idle, got %s", d.State())
 	}

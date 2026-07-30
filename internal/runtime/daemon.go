@@ -14,12 +14,14 @@ type Daemon struct {
 	stopped    time.Time
 	events     []Event
 	maxEvents  int
+	config     string
 }
 
-func NewDaemon(handler EventHandler) *Daemon {
+func NewDaemon(config string, handler EventHandler) *Daemon {
 	return &Daemon{
 		runtime:   NewRuntime(handler),
 		maxEvents: 256,
+		config:    config,
 	}
 }
 
@@ -67,6 +69,12 @@ func (d *Daemon) Events() []Event {
 	out := make([]Event, len(d.events))
 	copy(out, d.events)
 	return out
+}
+
+func (d *Daemon) Config() string {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.config
 }
 
 func (d *Daemon) record(ctx context.Context, event Event) error {

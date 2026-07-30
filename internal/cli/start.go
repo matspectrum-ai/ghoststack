@@ -15,7 +15,7 @@ func newStartCommand() *cobra.Command {
 		Use:   "start",
 		Short: "Start GhostStack runtime",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			daemon := runtime.NewDaemon(nil)
+			daemon := runtime.NewDaemon(configPath, nil)
 			if err := daemon.Start(cmd.Context()); err != nil {
 				return fmt.Errorf("start daemon: %w", err)
 			}

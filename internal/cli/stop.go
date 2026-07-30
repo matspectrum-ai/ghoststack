@@ -10,11 +10,13 @@ import (
 )
 
 func newStopCommand() *cobra.Command {
+	var configPath string
+
 	cmd := &cobra.Command{
 		Use:   "stop",
 		Short: "Stop GhostStack runtime",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			daemon := runtime.NewDaemon(nil)
+			daemon := runtime.NewDaemon(configPath, nil)
 			if err := daemon.Stop(cmd.Context()); err != nil {
 				if errors.Is(err, runtime.ErrNotStarted) {
 					fmt.Fprintln(os.Stdout, "GhostStack idle")
@@ -27,5 +29,6 @@ func newStopCommand() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringVar(&configPath, "config", "", "path to GhostStack config")
 	return cmd
 }

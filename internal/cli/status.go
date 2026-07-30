@@ -13,7 +13,7 @@ func newStatusCommand() *cobra.Command {
 		Use:   "status",
 		Short: "Show GhostStack status",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			daemon := runtime.NewDaemon(nil)
+			daemon := runtime.NewDaemon("", nil)
 			fmt.Fprintln(os.Stdout, daemon.String())
 			return nil
 		},
