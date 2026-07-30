@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -15,6 +16,10 @@ func newStopCommand() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			daemon := runtime.NewDaemon(nil)
 			if err := daemon.Stop(cmd.Context()); err != nil {
+				if errors.Is(err, runtime.ErrNotStarted) {
+					fmt.Fprintln(os.Stdout, "GhostStack idle")
+					return nil
+				}
 				return fmt.Errorf("stop daemon: %w", err)
 			}
 			fmt.Fprintln(os.Stdout, daemon.String())
