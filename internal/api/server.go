@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/ghoststack/ghoststack/internal/runtime"
@@ -22,6 +23,10 @@ func (s *Server) Start(ctx context.Context, addr string) (*http.Server, error) {
 	mux.HandleFunc("/api/status", s.handleStatus)
 	mux.HandleFunc("/api/monitoring", s.handleMonitoring)
 	mux.HandleFunc("/api/logs", s.handleLogs)
+
+	if dashboardDir := os.Getenv("GHOSTSTACK_DASHBOARD_DIR"); dashboardDir != "" {
+		mux.Handle("/", http.FileServer(http.Dir(dashboardDir)))
+	}
 
 	server := &http.Server{Addr: addr, Handler: mux}
 
