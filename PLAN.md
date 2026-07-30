@@ -80,7 +80,7 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - Permissions model (network, filesystem, secrets, system)
 - Plugin discovery
 
-### FASE 11 — Update System & Migration
+### FASE 11 — Update System & Migration ✅
 - Update Manager
 - Version Resolver
 - Migration Engine
@@ -128,8 +128,8 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ## 6. Próximos Passos
 
-- Iniciar FASE 10 — Plugin System
-- Usar `/gsd-new-milestone` para estruturar trabalho
+- Iniciar FASE 12 — Provider Hardening
+- Continuar execução do milestone v0.3.0
 
 ## GSTACK REVIEW REPORT
 
