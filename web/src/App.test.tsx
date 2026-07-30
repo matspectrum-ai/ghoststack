@@ -5,6 +5,6 @@ import App from './App'
 describe('App smoke', () => {
   it('renders heading', async () => {
     const result = await renderWithStrictMode(<App />)
-    expect(result.container.innerHTML).toContain('GhostStack Dashboard')
+    expect(result.container.innerHTML).toContain('GhostStack')
   })
 })

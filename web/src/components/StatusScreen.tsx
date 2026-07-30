@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchStatus } from '../services/api'
+import { useWebSocketStatus } from '../hooks/useWebSocket'
 
 interface Status {
   state: string
@@ -10,27 +11,69 @@ interface Status {
 export default function StatusScreen() {
   const [status, setStatus] = useState<Status | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const wsStatus = useWebSocketStatus()
 
   useEffect(() => {
     fetchStatus()
       .then(setStatus)
       .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
   }, [])
 
-  if (error) {
-    return <div><h2>Status</h2><p>Erro: {error}</p></div>
+  useEffect(() => {
+    if (wsStatus) {
+      setStatus(wsStatus)
+      setError(null)
+    }
+  }, [wsStatus])
+
+  if (error && !status) {
+    return (
+      <div className="screen">
+        <h2>Status</h2>
+        <div className="error">Erro: {error}</div>
+      </div>
+    )
+  }
+
+  if (loading && !status) {
+    return (
+      <div className="screen">
+        <h2>Status</h2>
+        <div className="loading">Carregando...</div>
+      </div>
+    )
   }
 
   if (!status) {
-    return <div><h2>Status</h2><p>Carregando...</p></div>
+    return (
+      <div className="screen">
+        <h2>Status</h2>
+        <div className="loading">Carregando...</div>
+      </div>
+    )
   }
 
   return (
-    <div>
+    <div className="screen">
       <h2>Status</h2>
-      <p>Estado: {status.state}</p>
-      <p>Uptime: {status.uptime}</p>
-      <p>Config: {status.config}</p>
+      <div className="status-grid">
+        <div className="status-card">
+          <span className="status-label">Estado</span>
+          <span className={`status-value ${status.state === 'running' ? 'success' : 'warning'}`}>
+            {status.state}
+          </span>
+        </div>
+        <div className="status-card">
+          <span className="status-label">Uptime</span>
+          <span className="status-value">{status.uptime}</span>
+        </div>
+        <div className="status-card">
+          <span className="status-label">Config</span>
+          <span className="status-value">{status.config}</span>
+        </div>
+      </div>
     </div>
   )
 }
