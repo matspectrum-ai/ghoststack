@@ -3,7 +3,7 @@ package cost
 import "context"
 
 type CostReport struct {
-	Total   float64
+	Total    float64
 	ByService map[string]float64
 }
 
