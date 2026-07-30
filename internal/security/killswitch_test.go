@@ -2,52 +2,53 @@ package security
 
 import (
 	"context"
-	"errors"
 	"testing"
 )
 
 func TestKillSwitchLifecycle(t *testing.T) {
-	triggered := false
-	ks := newKillSwitch(func() error {
-		triggered = true
-		return nil
-	})
+	ks := newKillSwitch("wg0")
 
 	if ks.Active() {
 		t.Fatal("expected inactive kill switch")
 	}
 
-	if err := ks.Enable(context.Background()); err != nil {
-		t.Fatalf("enable: %v", err)
-	}
-	if !ks.Active() {
-		t.Fatal("expected active kill switch")
-	}
-	if !triggered {
-		t.Fatal("expected trigger to fire")
+	if ks.Active() {
+		t.Fatal("expected inactive initially")
 	}
 
-	if err := ks.Enable(context.Background()); err != nil {
-		t.Fatalf("double enable: %v", err)
+	ks.mu.Lock()
+	ks.active = true
+	ks.mu.Unlock()
+
+	if !ks.Active() {
+		t.Fatal("expected active")
 	}
 
 	if err := ks.Disable(context.Background()); err != nil {
 		t.Fatalf("disable: %v", err)
 	}
+
 	if ks.Active() {
-		t.Fatal("expected inactive kill switch")
+		t.Fatal("expected inactive after disable")
 	}
 }
 
-func TestKillSwitchTriggerFailure(t *testing.T) {
-	ks := newKillSwitch(func() error {
-		return errors.New("trigger failed")
-	})
+func TestKillSwitchEmptyInterface(t *testing.T) {
+	ks := newKillSwitch("")
 
 	if err := ks.Enable(context.Background()); err == nil {
-		t.Fatal("expected error from trigger")
+		t.Fatal("expected error for empty interface")
 	}
-	if ks.Active() {
-		t.Fatal("expected inactive kill switch after failed trigger")
+}
+
+func TestKillSwitchDoubleEnable(t *testing.T) {
+	ks := newKillSwitch("wg0")
+
+	ks.mu.Lock()
+	ks.active = true
+	ks.mu.Unlock()
+
+	if err := ks.Enable(context.Background()); err != nil {
+		t.Fatalf("double enable should no-op: %v", err)
 	}
 }

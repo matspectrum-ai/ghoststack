@@ -9,21 +9,18 @@ import (
 type Resolver interface {
 	SetServers(ctx context.Context, servers []string) error
 	FlushCache(ctx context.Context) error
+	Restore(ctx context.Context) error
 }
 
-var (
-	ErrResolverNotStarted = fmt.Errorf("resolver not started")
-)
-
 type resolver struct {
-	mu       sync.RWMutex
-	servers  []string
-	started  bool
-	flushed  int
+	mu          sync.RWMutex
+	servers     []string
+	interface_  string
+	backupPath  string
 }
 
 func newResolver() Resolver {
-	return &resolver{}
+	return &resolver{interface_: "ghost0"}
 }
 
 func (r *resolver) SetServers(ctx context.Context, servers []string) error {
@@ -33,18 +30,31 @@ func (r *resolver) SetServers(ctx context.Context, servers []string) error {
 
 	r.mu.Lock()
 	defer r.mu.Unlock()
+
 	r.servers = append([]string(nil), servers...)
-	return nil
+	return r.applyServers(ctx, servers)
+}
+
+func (r *resolver) applyServers(ctx context.Context, servers []string) error {
+	err := setResolvectl(ctx, r.interface_, servers)
+	if err == nil {
+		return nil
+	}
+
+	return setResolvConf(ctx, servers)
 }
 
 func (r *resolver) FlushCache(ctx context.Context) error {
+	if err := flushResolvectl(ctx); err != nil {
+		return fmt.Errorf("flush dns cache: %w", err)
+	}
+	return nil
+}
+
+func (r *resolver) Restore(ctx context.Context) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	if !r.started {
-		return ErrResolverNotStarted
-	}
-
-	r.flushed++
-	return nil
+	r.servers = nil
+	return restoreResolvConf(ctx)
 }

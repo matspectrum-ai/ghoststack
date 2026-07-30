@@ -2,38 +2,40 @@ package providers
 
 import "context"
 
+type ProviderState string
+
+const (
+	ProviderStopped   ProviderState = "stopped"
+	ProviderRunning   ProviderState = "running"
+	ProviderFailed    ProviderState = "failed"
+)
+
 type Provider interface {
 	Name() string
 	Start(ctx context.Context) error
 	Stop(ctx context.Context) error
+	State() ProviderState
 }
 
+type ProviderFactory func(config map[string]any) (Provider, error)
+
 type WireGuardProvider interface {
-	Name() string
-	Start(ctx context.Context, configPath string) error
-	Stop(ctx context.Context) error
+	Provider
+	Status(ctx context.Context) (map[string]any, error)
 }
 
 type TorProvider interface {
-	Name() string
-	Start(ctx context.Context) error
-	Stop(ctx context.Context) error
+	Provider
 }
 
 type SingBoxProvider interface {
-	Name() string
-	Start(ctx context.Context, configPath string) error
-	Stop(ctx context.Context) error
+	Provider
 }
 
 type UnboundProvider interface {
-	Name() string
-	Start(ctx context.Context) error
-	Stop(ctx context.Context) error
+	Provider
 }
 
 type Socks5ProxyProvider interface {
-	Name() string
-	Start(ctx context.Context, listen string) error
-	Stop(ctx context.Context) error
+	Provider
 }

@@ -2,20 +2,24 @@ package security
 
 import (
 	"context"
+	"fmt"
 	"sync"
+
+	"github.com/ghoststack/ghoststack/internal/platform/linux"
 )
 
 type killSwitch struct {
 	mu      sync.RWMutex
 	active  bool
-	trigger func() error
+	iface   string
+	firewall *linux.Firewall
 }
 
-func newKillSwitch(trigger func() error) KillSwitch {
-	if trigger == nil {
-		trigger = func() error { return nil }
+func newKillSwitch(iface string) *killSwitch {
+	return &killSwitch{
+		iface:    iface,
+		firewall: linux.NewFirewall(),
 	}
-	return &killSwitch{trigger: trigger}
 }
 
 func (k *killSwitch) Enable(ctx context.Context) error {
@@ -26,8 +30,12 @@ func (k *killSwitch) Enable(ctx context.Context) error {
 		return nil
 	}
 
-	if err := k.trigger(); err != nil {
-		return err
+	if k.iface == "" {
+		return fmt.Errorf("kill switch: no interface set")
+	}
+
+	if err := k.firewall.ApplyKillSwitch(ctx, k.iface); err != nil {
+		return fmt.Errorf("kill switch enable: %w", err)
 	}
 
 	k.active = true
@@ -37,6 +45,15 @@ func (k *killSwitch) Enable(ctx context.Context) error {
 func (k *killSwitch) Disable(ctx context.Context) error {
 	k.mu.Lock()
 	defer k.mu.Unlock()
+
+	if !k.active {
+		return nil
+	}
+
+	if err := k.firewall.RemoveKillSwitch(ctx); err != nil {
+		return fmt.Errorf("kill switch disable: %w", err)
+	}
+
 	k.active = false
 	return nil
 }

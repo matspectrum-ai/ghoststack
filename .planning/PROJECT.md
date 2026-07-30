@@ -1,17 +1,17 @@
 # GhostStack — Project Context
 
 Versão do milestone: 1.0.0
-Status: Active
+Status: Concluído
 Branch: master
 Última revisão: gsd-new-milestone (2026-07-30)
 
 ## 1. Missão
 
-Lançar o GhostStack 1.0.0 como a versão estável de referência em privacidade e orquestração de rede.
+GhostStack é uma plataforma de privacidade e orquestração de rede, production-ready, multi-plataforma e extensível via plugins.
 
 ## 2. Contexto
 
-O milestone v0.9.0 entregou final preparation, UX polish, ecossistema, operações e documentação completa. O próximo passo é consolidar a release 1.0.0.
+O projeto evoluiu de runtime base para plataforma completa com 50 fases implementadas, cobrindo core runtime, providers, segurança, event bus, plugin system, dashboard, observabilidade, enterprise integration e documentação completa.
 
 ## 3. Objetivos do Milestone
 
@@ -34,8 +34,14 @@ O milestone v0.9.0 entregou final preparation, UX polish, ecossistema, operaçõ
 - Plugins: Go SDK + TypeScript SDK
 - Observabilidade: OpenTelemetry + Prometheus
 
-## 6. Próximos Passos Imediatos
+## 6. Histórico de Releases
 
-- Iniciar FASE 46 — v1.0.0 Release Preparation
-- Revisar docs/46-v1-release.md
-- Abrir ADR para release estável
+- v0.2.0 — Foundation + Core Runtime + Networking + Security + Providers + CLI + Dashboard
+- v0.3.0 — Plugin System + Update System + Provider Hardening + Event Bus + CLI Expansion + Dashboard Hardening
+- v0.4.0 — Performance + Security Hardening + Cross-Platform + UX/DX + Integration/Ecosystem
+- v0.5.0 — Production Readiness + Plugin Marketplace + Observabilidade Avançada + Automação + Documentação
+- v0.6.0 — Enterprise Integration + Escalabilidade + Governança + Automação Inteligente + Comunidade
+- v0.7.0 — LTS Preparation + Maturidade do Produto + Marketplace & Integrações + Operações + Documentação
+- v0.8.0 — Long-term Stability + UX Polish + Ecossistema + Operações + Documentação
+- v0.9.0 — Final Preparation + UX Polish + Ecossistema + Operações + Documentação
+- v1.0.0 — Release Preparation + UX Final + Ecossistema Final + Operações Final + Documentação Final

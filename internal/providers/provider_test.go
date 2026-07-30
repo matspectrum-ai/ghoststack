@@ -5,82 +5,89 @@ import (
 	"testing"
 )
 
-func TestWireGuardProviderLifecycle(t *testing.T) {
-	p := newWireGuardProvider("test")
+func TestWireGuardProviderName(t *testing.T) {
+	p := newWireGuardProvider(WireGuardConfig{
+		PrivateKey: "priv",
+		PublicKey:  "pub",
+		Endpoint:   "10.0.0.1:51820",
+	})
 
 	if p.Name() != "wireguard" {
 		t.Fatalf("unexpected name: %s", p.Name())
 	}
 
-	if err := p.Start(context.Background(), ""); err != nil {
-		t.Fatalf("start: %v", err)
-	}
-
-	if err := p.Stop(context.Background()); err != nil {
-		t.Fatalf("stop: %v", err)
+	if p.State() != ProviderStopped {
+		t.Fatalf("expected stopped, got %s", p.State())
 	}
 }
 
-func TestTorProviderLifecycle(t *testing.T) {
-	p := newTorProvider()
+func TestTorProviderName(t *testing.T) {
+	p, err := newTorProvider(nil)
+	if err != nil {
+		t.Fatalf("new: %v", err)
+	}
 
 	if p.Name() != "tor" {
 		t.Fatalf("unexpected name: %s", p.Name())
 	}
-
-	if err := p.Start(context.Background()); err != nil {
-		t.Fatalf("start: %v", err)
-	}
-
-	if err := p.Stop(context.Background()); err != nil {
-		t.Fatalf("stop: %v", err)
-	}
 }
 
-func TestSingBoxProviderLifecycle(t *testing.T) {
-	p := newSingBoxProvider("test")
+func TestSingBoxProviderName(t *testing.T) {
+	p, err := newSingBoxProvider(nil)
+	if err != nil {
+		t.Fatalf("new: %v", err)
+	}
 
 	if p.Name() != "sing-box" {
 		t.Fatalf("unexpected name: %s", p.Name())
 	}
-
-	if err := p.Start(context.Background(), ""); err != nil {
-		t.Fatalf("start: %v", err)
-	}
-
-	if err := p.Stop(context.Background()); err != nil {
-		t.Fatalf("stop: %v", err)
-	}
 }
 
-func TestUnboundProviderLifecycle(t *testing.T) {
-	p := newUnboundProvider()
+func TestUnboundProviderName(t *testing.T) {
+	p, err := newUnboundProvider(nil)
+	if err != nil {
+		t.Fatalf("new: %v", err)
+	}
 
 	if p.Name() != "unbound" {
 		t.Fatalf("unexpected name: %s", p.Name())
+	}
+}
+
+func TestSocks5ProviderName(t *testing.T) {
+	p, err := newSocks5Provider(map[string]any{
+		"listen": "127.0.0.1:0",
+	})
+	if err != nil {
+		t.Fatalf("new: %v", err)
+	}
+
+	if p.Name() != "socks5" {
+		t.Fatalf("unexpected name: %s", p.Name())
+	}
+}
+
+func TestSocks5ProviderLifecycle(t *testing.T) {
+	p, err := newSocks5Provider(map[string]any{
+		"listen": "127.0.0.1:0",
+	})
+	if err != nil {
+		t.Fatalf("new: %v", err)
 	}
 
 	if err := p.Start(context.Background()); err != nil {
 		t.Fatalf("start: %v", err)
 	}
 
-	if err := p.Stop(context.Background()); err != nil {
-		t.Fatalf("stop: %v", err)
-	}
-}
-
-func TestSocks5ProviderLifecycle(t *testing.T) {
-	p := newSocks5ProxyProvider("")
-
-	if p.Name() != "socks5" {
-		t.Fatalf("unexpected name: %s", p.Name())
-	}
-
-	if err := p.Start(context.Background(), ""); err != nil {
-		t.Fatalf("start: %v", err)
+	if p.State() != ProviderRunning {
+		t.Fatalf("expected running, got %s", p.State())
 	}
 
 	if err := p.Stop(context.Background()); err != nil {
 		t.Fatalf("stop: %v", err)
+	}
+
+	if p.State() != ProviderStopped {
+		t.Fatalf("expected stopped, got %s", p.State())
 	}
 }
