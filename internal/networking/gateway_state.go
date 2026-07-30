@@ -1,8 +1,14 @@
 package networking
 
 import (
+	"fmt"
 	"sync"
 	"time"
+)
+
+var (
+	ErrGatewayAlreadyStarted = fmt.Errorf("gateway already started")
+	ErrGatewayNotStarted     = fmt.Errorf("gateway not started")
 )
 
 type gatewayState struct {
