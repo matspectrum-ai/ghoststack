@@ -17,28 +17,28 @@ import (
 type IPCMessageType string
 
 const (
-	MsgInit        IPCMessageType = "init"
-	MsgStart       IPCMessageType = "start"
-	MsgStop        IPCMessageType = "stop"
-	MsgHealth      IPCMessageType = "health"
-	MsgEvent       IPCMessageType = "event"
-	MsgLog         IPCMessageType = "log"
-	MsgError       IPCMessageType = "error"
-	MsgInitAck     IPCMessageType = "init_ack"
-	MsgStartAck    IPCMessageType = "start_ack"
-	MsgStopAck     IPCMessageType = "stop_ack"
-	MsgHealthAck   IPCMessageType = "health_ack"
+	MsgInit      IPCMessageType = "init"
+	MsgStart     IPCMessageType = "start"
+	MsgStop      IPCMessageType = "stop"
+	MsgHealth    IPCMessageType = "health"
+	MsgEvent     IPCMessageType = "event"
+	MsgLog       IPCMessageType = "log"
+	MsgError     IPCMessageType = "error"
+	MsgInitAck   IPCMessageType = "init_ack"
+	MsgStartAck  IPCMessageType = "start_ack"
+	MsgStopAck   IPCMessageType = "stop_ack"
+	MsgHealthAck IPCMessageType = "health_ack"
 )
 
 type IPCMessage struct {
-	Type    IPCMessageType   `json:"type"`
-	Payload json.RawMessage  `json:"payload,omitempty"`
+	Type    IPCMessageType  `json:"type"`
+	Payload json.RawMessage `json:"payload,omitempty"`
 }
 
 type InitPayload struct {
-	PluginID    string            `json:"plugin_id"`
-	Config      map[string]any    `json:"config"`
-	Capabilities []string         `json:"capabilities"`
+	PluginID     string         `json:"plugin_id"`
+	Config       map[string]any `json:"config"`
+	Capabilities []string       `json:"capabilities"`
 }
 
 type HealthPayload struct {
@@ -47,15 +47,15 @@ type HealthPayload struct {
 }
 
 type subprocessPlugin struct {
-	mu        sync.RWMutex
-	manifest  PluginManifest
-	state     PluginState
-	proc      *providers.ProcessManager
+	mu         sync.RWMutex
+	manifest   PluginManifest
+	state      PluginState
+	proc       *providers.ProcessManager
 	socketPath string
-	conn      net.Conn
-	reader    *bufio.Scanner
-	responses chan IPCMessage
-	cancel    context.CancelFunc
+	conn       net.Conn
+	reader     *bufio.Scanner
+	responses  chan IPCMessage
+	cancel     context.CancelFunc
 }
 
 func newSubprocessPlugin(manifest PluginManifest) *subprocessPlugin {
@@ -226,5 +226,3 @@ func (l *subprocessPluginLoader) Load(path string) (Plugin, error) {
 
 	return plugin, nil
 }
-
-

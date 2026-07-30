@@ -17,11 +17,11 @@ var (
 type State string
 
 const (
-	StateIdle    State = "idle"
-	StateRunning State = "running"
+	StateIdle     State = "idle"
+	StateRunning  State = "running"
 	StateStopping State = "stopping"
-	StateStopped State = "stopped"
-	StateFailed  State = "failed"
+	StateStopped  State = "stopped"
+	StateFailed   State = "failed"
 )
 
 type Event struct {

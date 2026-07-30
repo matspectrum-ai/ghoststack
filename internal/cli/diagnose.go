@@ -5,16 +5,16 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"syscall"
 
 	"github.com/ghoststack/ghoststack/internal/security"
 	"github.com/spf13/cobra"
+	"golang.org/x/sys/unix"
 )
 
 type diagnoseCheck struct {
-	name   string
-	check  func() error
-	fix    string
+	name  string
+	check func() error
+	fix   string
 }
 
 var diagnoseChecks = []diagnoseCheck{
@@ -105,7 +105,7 @@ var diagnoseChecks = []diagnoseCheck{
 	{
 		name: "seccomp syscall filter",
 		check: func() error {
-			if err := syscall.Prctl(syscall.PR_GET_SECCOMP, 0, 0, 0, 0); err != nil {
+			if err := unix.Prctl(unix.PR_GET_SECCOMP, 0, 0, 0, 0); err != nil {
 				return fmt.Errorf("seccomp not available: %w", err)
 			}
 			return nil

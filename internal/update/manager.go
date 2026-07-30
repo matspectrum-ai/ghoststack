@@ -7,11 +7,11 @@ import (
 )
 
 type UpdateManager struct {
-	mu           sync.RWMutex
-	state        UpdateState
-	manifest     *UpdateManifest
-	backupPath   string
-	migrations   *MigrationEngine
+	mu         sync.RWMutex
+	state      UpdateState
+	manifest   *UpdateManifest
+	backupPath string
+	migrations *MigrationEngine
 }
 
 func NewUpdateManager(migrations *MigrationEngine) *UpdateManager {
@@ -40,7 +40,7 @@ func (m *UpdateManager) Check(ctx context.Context) (*UpdateCheckResult, error) {
 	m.SetState(UpdateStateChecking)
 
 	result := &UpdateCheckResult{
-		State:   UpdateStateChecking,
+		State:     UpdateStateChecking,
 		Available: false,
 	}
 

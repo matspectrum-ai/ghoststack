@@ -10,6 +10,7 @@ import (
 	"github.com/ghoststack/ghoststack/internal/config"
 	"github.com/ghoststack/ghoststack/internal/providers"
 	"github.com/ghoststack/ghoststack/internal/runtime"
+	"github.com/ghoststack/ghoststack/internal/storage"
 	"github.com/spf13/cobra"
 )
 
@@ -18,6 +19,8 @@ func newStartCommand() *cobra.Command {
 	var apiAddr string
 	var providerName string
 	var force bool
+
+	var tls bool
 
 	cmd := &cobra.Command{
 		Use:   "start",
@@ -67,12 +70,32 @@ func newStartCommand() *cobra.Command {
 			}
 
 			daemon := runtime.NewDaemon(configPath, nil)
+
+			store := storage.NewSQLiteProvider()
+			if err := store.Open(cmd.Context(), ""); err != nil {
+				engine.StopAll(startCtx)
+				return fmt.Errorf("open storage: %w", err)
+			}
+			defer store.Close(cmd.Context())
+
+			if err := store.Migrate(cmd.Context()); err != nil {
+				engine.StopAll(startCtx)
+				return fmt.Errorf("migrate storage: %w", err)
+			}
+			daemon.SetStorage(store)
+
 			if err := daemon.Start(cmd.Context()); err != nil {
 				engine.StopAll(startCtx)
 				return fmt.Errorf("start daemon: %w", err)
 			}
 
-			server := api.NewServer(daemon)
+			var server *api.Server
+			if tls {
+				tlsCfg := api.DefaultTLSConfig(homeDir())
+				server = api.NewServerWithTLS(daemon, tlsCfg)
+			} else {
+				server = api.NewServer(daemon)
+			}
 
 			httpServer, err := server.Start(cmd.Context(), apiAddr)
 			if err != nil {
@@ -106,9 +129,15 @@ func newStartCommand() *cobra.Command {
 
 			fmt.Fprintln(os.Stdout, daemon.String())
 			fmt.Fprintf(os.Stdout, "Provider: %s\n", providerName)
-			fmt.Fprintf(os.Stdout, "API listening on http://%s\n", apiAddr)
-			fmt.Fprintln(os.Stdout, "WebSocket: ws://"+apiAddr+"/api/ws")
-			fmt.Fprintln(os.Stdout, "SSE:       http://"+apiAddr+"/api/events")
+			if tls {
+				fmt.Fprintf(os.Stdout, "API listening on https://[::1]:8443\n")
+				fmt.Fprintln(os.Stdout, "WebSocket: wss://[::1]:8443/api/ws")
+				fmt.Fprintln(os.Stdout, "HTTP→HTTPS redirect at "+apiAddr)
+			} else {
+				fmt.Fprintf(os.Stdout, "API listening on http://%s\n", apiAddr)
+				fmt.Fprintln(os.Stdout, "WebSocket: ws://"+apiAddr+"/api/ws")
+				fmt.Fprintln(os.Stdout, "SSE:       http://"+apiAddr+"/api/events")
+			}
 
 			<-cmd.Context().Done()
 			return nil
@@ -119,5 +148,6 @@ func newStartCommand() *cobra.Command {
 	cmd.Flags().StringVar(&apiAddr, "api-addr", "127.0.0.1:8080", "API listen address")
 	cmd.Flags().StringVar(&providerName, "provider", "", "provider name (wireguard, tor, sing-box, unbound, socks5)")
 	cmd.Flags().BoolVar(&force, "force", false, "skip pre-flight diagnostics")
+	cmd.Flags().BoolVar(&tls, "tls", false, "enable HTTPS with auto-generated self-signed cert")
 	return cmd
 }

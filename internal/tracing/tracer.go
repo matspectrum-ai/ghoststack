@@ -23,5 +23,5 @@ func (t *noopTracer) StartSpan(ctx context.Context, name string) (context.Contex
 
 type noopSpan struct{}
 
-func (s *noopSpan) End() {}
+func (s *noopSpan) End()               {}
 func (s *noopSpan) SetTag(_, _ string) {}

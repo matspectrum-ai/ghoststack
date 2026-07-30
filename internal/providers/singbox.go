@@ -52,14 +52,14 @@ func (p *singBoxProvider) Start(ctx context.Context) error {
 
 	cfg := map[string]any{
 		"log": map[string]any{
-			"level": "info",
+			"level":  "info",
 			"output": filepath.Join(dir, "sing-box.log"),
 		},
 		"inbounds": []map[string]any{
 			{
-				"type": "socks",
-				"tag":  "socks-in",
-				"listen": p.addr,
+				"type":        "socks",
+				"tag":         "socks-in",
+				"listen":      p.addr,
 				"listen_port": p.port,
 			},
 		},

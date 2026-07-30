@@ -9,15 +9,15 @@ import (
 type UpdateState string
 
 const (
-	UpdateStateIdle       UpdateState = "idle"
-	UpdateStateChecking   UpdateState = "checking"
+	UpdateStateIdle        UpdateState = "idle"
+	UpdateStateChecking    UpdateState = "checking"
 	UpdateStateDownloading UpdateState = "downloading"
-	UpdateStateVerifying  UpdateState = "verifying"
-	UpdateStateMigrating  UpdateState = "migrating"
-	UpdateStateInstalling UpdateState = "installing"
-	UpdateStateValidating UpdateState = "validating"
-	UpdateStateCompleted  UpdateState = "completed"
-	UpdateStateFailed     UpdateState = "failed"
+	UpdateStateVerifying   UpdateState = "verifying"
+	UpdateStateMigrating   UpdateState = "migrating"
+	UpdateStateInstalling  UpdateState = "installing"
+	UpdateStateValidating  UpdateState = "validating"
+	UpdateStateCompleted   UpdateState = "completed"
+	UpdateStateFailed      UpdateState = "failed"
 )
 
 type UpdateManifest struct {
@@ -31,10 +31,10 @@ type UpdateManifest struct {
 }
 
 type UpdateCheckResult struct {
-	State       UpdateState
-	Available   bool
-	Manifest    *UpdateManifest
-	Error       error
+	State     UpdateState
+	Available bool
+	Manifest  *UpdateManifest
+	Error     error
 }
 
 func (m UpdateManifest) VerifyChecksum(data []byte) error {

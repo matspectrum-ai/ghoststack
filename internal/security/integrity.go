@@ -12,4 +12,3 @@ var (
 type IntegrityChecker interface {
 	Verify(ctx context.Context, target string) ([]string, error)
 }
-

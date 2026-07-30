@@ -17,14 +17,14 @@ type WSMessage struct {
 }
 
 type WSClient struct {
-	conn  *websocket.Conn
-	send  chan []byte
-	mu    sync.Mutex
+	conn *websocket.Conn
+	send chan []byte
+	mu   sync.Mutex
 }
 
 type WSHub struct {
-	mu      sync.RWMutex
-	clients map[*WSClient]bool
+	mu       sync.RWMutex
+	clients  map[*WSClient]bool
 	upgrader websocket.Upgrader
 }
 
@@ -142,13 +142,13 @@ func (h *WSHub) BroadcastEvent(eventType string, payload any) {
 }
 
 type MetricsCollector struct {
-	mu       sync.RWMutex
-	hub      *WSHub
-	cpu      float64
-	memory   uint64
-	rxBytes  int64
-	txBytes  int64
-	uptime   int64
+	mu      sync.RWMutex
+	hub     *WSHub
+	cpu     float64
+	memory  uint64
+	rxBytes int64
+	txBytes int64
+	uptime  int64
 }
 
 func NewMetricsCollector(hub *WSHub) *MetricsCollector {

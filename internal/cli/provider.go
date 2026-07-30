@@ -25,7 +25,7 @@ func newProviderListCommand() *cobra.Command {
 		Short: "List available providers",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			providerList := []struct {
-				name string
+				name  string
 				type_ string
 			}{
 				{"wireguard", "vpn"},

@@ -3,9 +3,9 @@ package community
 import "context"
 
 type Template struct {
-	ID    string
-	Name  string
-	YAML  string
+	ID   string
+	Name string
+	YAML string
 }
 
 type Gallery struct {

@@ -18,15 +18,15 @@ const (
 )
 
 type MetricValue struct {
-	Type  MetricType `json:"type"`
-	Name  string     `json:"name"`
-	Value float64    `json:"value"`
+	Type  MetricType        `json:"type"`
+	Name  string            `json:"name"`
+	Value float64           `json:"value"`
 	Tags  map[string]string `json:"tags,omitempty"`
 }
 
 type MetricsRegistry struct {
-	mu      sync.RWMutex
-	gauges  map[string]float64
+	mu       sync.RWMutex
+	gauges   map[string]float64
 	counters map[string]int64
 }
 
@@ -248,12 +248,12 @@ const (
 )
 
 type Alert struct {
-	ID        string        `json:"id"`
-	Severity  AlertSeverity `json:"severity"`
-	Title     string        `json:"title"`
-	Message   string        `json:"message"`
-	Timestamp time.Time     `json:"timestamp"`
-	Acknowledged bool       `json:"acknowledged"`
+	ID           string        `json:"id"`
+	Severity     AlertSeverity `json:"severity"`
+	Title        string        `json:"title"`
+	Message      string        `json:"message"`
+	Timestamp    time.Time     `json:"timestamp"`
+	Acknowledged bool          `json:"acknowledged"`
 }
 
 type AlertManager struct {

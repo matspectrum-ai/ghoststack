@@ -1,10 +1,10 @@
 package types
 
 type ProfileSnapshot struct {
-	Timestamp   int64
-	AllocMB     float64
-	SysMB       float64
-	Goroutines  int
+	Timestamp  int64
+	AllocMB    float64
+	SysMB      float64
+	Goroutines int
 }
 
 type MemoryStats interface {

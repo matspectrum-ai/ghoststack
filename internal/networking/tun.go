@@ -27,11 +27,11 @@ var (
 )
 
 type tunDevice struct {
-	mu     sync.RWMutex
-	fd     int
-	name   string
-	mtu    int
-	up     bool
+	mu   sync.RWMutex
+	fd   int
+	name string
+	mtu  int
+	up   bool
 }
 
 func NewTUN() TunDevice {

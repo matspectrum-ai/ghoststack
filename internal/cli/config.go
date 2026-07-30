@@ -3,7 +3,9 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
+	"github.com/ghoststack/ghoststack/internal/secrets"
 	"github.com/spf13/cobra"
 )
 
@@ -50,6 +52,12 @@ secrets:
   sources:
     - env://GHOST_WG_PRIVATE_KEY
     - file://~/.ghost/secrets.yaml
+
+tls:
+  enabled: true
+  auto_cert: true
+  cert_file: ""
+  key_file: ""
 
 profiles:
   default:
@@ -111,11 +119,15 @@ func newConfigReloadCommand() *cobra.Command {
 }
 
 func newConfigInitCommand() *cobra.Command {
-	return &cobra.Command{
+	var passphrase string
+
+	cmd := &cobra.Command{
 		Use:   "init",
 		Short: "Create a GhostStack configuration template",
 		Long: `Creates a ghoststack.yaml configuration file with all options documented.
-Edit the file with your WireGuard credentials and run 'ghost start'.`,
+Edit the file with your WireGuard credentials and run 'ghost start'.
+
+Use --passphrase to initialize encrypted secrets storage.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			path := "ghoststack.yaml"
 			if len(args) > 0 {
@@ -126,13 +138,26 @@ Edit the file with your WireGuard credentials and run 'ghost start'.`,
 				return fmt.Errorf("file already exists: %s", path)
 			}
 
-			if err := os.WriteFile(path, []byte(configTemplate), 0644); err != nil {
+			if err := os.WriteFile(path, []byte(configTemplate), 0600); err != nil {
 				return fmt.Errorf("write config: %w", err)
 			}
 
 			fmt.Fprintf(os.Stdout, "Configuration template created: %s\n", path)
 			fmt.Fprintln(os.Stdout, "Edit the file and run: ghost start --config "+path)
+
+			if passphrase != "" {
+				sm := secrets.NewSecretsManager(homeDir())
+				if err := sm.Init(passphrase); err != nil {
+					return fmt.Errorf("init secrets: %w", err)
+				}
+				fmt.Fprintln(os.Stdout, "Secrets store initialized: "+filepath.Join(homeDir(), "secrets.enc"))
+				fmt.Fprintln(os.Stdout, "Use 'ghost secrets set' to store encrypted credentials.")
+			}
+
 			return nil
 		},
 	}
+
+	cmd.Flags().StringVar(&passphrase, "passphrase", "", "initialize encrypted secrets store")
+	return cmd
 }

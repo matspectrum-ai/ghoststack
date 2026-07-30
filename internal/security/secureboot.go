@@ -81,17 +81,14 @@ func (b *SecureBoot) RotateSecret(ctx context.Context, name string, newValue str
 	b.mu.Lock()
 	defer b.mu.Unlock()
 
-	prevHash := sha256.Sum256([]byte(b.secrets[name]))
-	newHash := sha256.Sum256([]byte(newValue))
-
 	b.secrets[name] = newValue
 
 	b.audit.Log(ctx, StructuredAuditEntry{
-		Action:   "secret_rotate",
-		Source:   "secureboot",
-		Detail:   fmt.Sprintf("rotated secret %s", name),
-		Result:   "success",
-		ID:       fmt.Sprintf("rotate-%s-%d", name, time.Now().UnixNano()),
+		Action:    "secret_rotate",
+		Source:    "secureboot",
+		Detail:    fmt.Sprintf("rotated secret %s", name),
+		Result:    "success",
+		ID:        fmt.Sprintf("rotate-%s-%d", name, time.Now().UnixNano()),
 		Timestamp: time.Now(),
 	})
 

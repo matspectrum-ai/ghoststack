@@ -7,16 +7,9 @@ import (
 	"github.com/ghoststack/ghoststack/internal/cli"
 )
 
-
-var (
-	Version   = "dev"
-	Commit    = "unknown"
-	BuildTime = "unknown"
-)
-
 func main() {
 	root := cli.NewRootCommand()
-	root.Version = fmt.Sprintf("%s (%s) built %s", Version, Commit, BuildTime)
+	root.Version = fmt.Sprintf("%s (%s) built %s", cli.Version, cli.Commit, cli.BuildTime)
 	root.SetVersionTemplate("GhostStack {{.Version}}\n")
 
 	if err := root.Execute(); err != nil {

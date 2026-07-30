@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-
 func TestPluginListCommand(t *testing.T) {
 	cmd := newPluginListCommand()
 	_, err := executeCommand(cmd)

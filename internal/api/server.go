@@ -2,7 +2,9 @@ package api
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -11,9 +13,10 @@ import (
 )
 
 type Server struct {
-	daemon  *runtime.Daemon
-	hub     *WSHub
-	metrics *MetricsCollector
+	daemon    *runtime.Daemon
+	hub       *WSHub
+	metrics   *MetricsCollector
+	tlsConfig *TLSConfig
 }
 
 func NewServer(daemon *runtime.Daemon) *Server {
@@ -25,7 +28,27 @@ func NewServer(daemon *runtime.Daemon) *Server {
 	}
 }
 
+func NewServerWithTLS(daemon *runtime.Daemon, tlsCfg *TLSConfig) *Server {
+	s := NewServer(daemon)
+	s.tlsConfig = tlsCfg
+	return s
+}
+
 func (s *Server) Start(ctx context.Context, addr string) (*http.Server, error) {
+	mux := s.handler(ctx)
+
+	if s.tlsConfig != nil {
+		tlsCfg, err := LoadTLSConfig(s.tlsConfig)
+		if err != nil {
+			return nil, fmt.Errorf("tls config: %w", err)
+		}
+		return s.startTLS(ctx, addr, mux, tlsCfg)
+	}
+
+	return s.startHTTP(ctx, addr, mux)
+}
+
+func (s *Server) handler(ctx context.Context) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/status", s.handleStatus)
 	mux.HandleFunc("/api/monitoring", s.handleMonitoring)
@@ -41,6 +64,10 @@ func (s *Server) Start(ctx context.Context, addr string) (*http.Server, error) {
 		mux.Handle("/", http.FileServer(http.Dir(dashboardDir)))
 	}
 
+	return mux
+}
+
+func (s *Server) startHTTP(ctx context.Context, addr string, mux *http.ServeMux) (*http.Server, error) {
 	server := &http.Server{Addr: addr, Handler: mux}
 
 	go func() {
@@ -56,6 +83,39 @@ func (s *Server) Start(ctx context.Context, addr string) (*http.Server, error) {
 	}()
 
 	return server, nil
+}
+
+func (s *Server) startTLS(ctx context.Context, addr string, mux *http.ServeMux, tlsCfg *tls.Config) (*http.Server, error) {
+	redirectMux := http.NewServeMux()
+	redirectMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		redirectURL := "https://" + r.Host + r.URL.String()
+		http.Redirect(w, r, redirectURL, http.StatusPermanentRedirect)
+	})
+
+	redirectServer := &http.Server{Addr: addr, Handler: redirectMux}
+	go redirectServer.ListenAndServe()
+
+	tlsAddr := "[::1]:8443"
+	tlsServer := &http.Server{
+		Addr:      tlsAddr,
+		Handler:   mux,
+		TLSConfig: tlsCfg,
+	}
+
+	go func() {
+		<-ctx.Done()
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		tlsServer.Shutdown(shutdownCtx)
+		redirectServer.Shutdown(shutdownCtx)
+	}()
+
+	go func() {
+		if err := tlsServer.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
+		}
+	}()
+
+	return tlsServer, nil
 }
 
 func (s *Server) Hub() *WSHub {
@@ -80,7 +140,7 @@ func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, map[string]any{
 		"state":  s.daemon.State(),
 		"uptime": s.daemon.Uptime().String(),
-		"config": s.daemon.Config(),
+		"config": s.daemon.ConfigString(),
 	})
 }
 
@@ -133,7 +193,7 @@ func (s *Server) handleProviders(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		writeJSON(w, s.daemon.Config())
+		writeJSON(w, s.daemon.ConfigString())
 	case http.MethodPost:
 		var cfg map[string]any
 		if err := json.NewDecoder(r.Body).Decode(&cfg); err != nil {

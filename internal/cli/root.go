@@ -20,6 +20,12 @@ func NewRootCommand() *cobra.Command {
 	cmd.AddCommand(newProviderCommand())
 	cmd.AddCommand(newUpdateCommand())
 	cmd.AddCommand(newEmergencyStopCommand())
+	cmd.AddCommand(newSecretsCommand())
+	cmd.AddCommand(newDBCommand())
+	cmd.AddCommand(newServiceCommand())
+	cmd.AddCommand(newKillSwitchCommand())
+	cmd.AddCommand(newAuditCommand())
+	cmd.AddCommand(newVersionCommand())
 
 	return cmd
 }

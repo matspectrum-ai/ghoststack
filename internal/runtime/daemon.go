@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/ghoststack/ghoststack/internal/storage"
 )
 
 type Daemon struct {
-	mu         sync.RWMutex
-	runtime    *Runtime
-	started    time.Time
-	stopped    time.Time
-	events     []Event
-	maxEvents  int
-	config     string
+	mu        sync.RWMutex
+	runtime   *Runtime
+	store     storage.StorageProvider
+	started   time.Time
+	stopped   time.Time
+	events    []Event
+	maxEvents int
+	config    string
 }
 
 func NewDaemon(config string, handler EventHandler) *Daemon {
@@ -23,6 +26,12 @@ func NewDaemon(config string, handler EventHandler) *Daemon {
 		maxEvents: 256,
 		config:    config,
 	}
+}
+
+func (d *Daemon) SetStorage(s storage.StorageProvider) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.store = s
 }
 
 func (d *Daemon) Start(ctx context.Context) error {
@@ -34,6 +43,16 @@ func (d *Daemon) Start(ctx context.Context) error {
 	}
 
 	d.started = time.Now().UTC()
+
+	if d.store != nil {
+		_ = d.store.SaveRuntimeState(ctx, storage.RuntimeState{
+			Status:    "running",
+			Mode:      d.config,
+			StartedAt: d.started.Unix(),
+			UpdatedAt: time.Now().Unix(),
+		})
+	}
+
 	return d.record(ctx, Event{Type: "daemon.started", Source: "daemon"})
 }
 
@@ -46,6 +65,15 @@ func (d *Daemon) Stop(ctx context.Context) error {
 	}
 
 	d.stopped = time.Now().UTC()
+
+	if d.store != nil {
+		_ = d.store.SaveRuntimeState(ctx, storage.RuntimeState{
+			Status:    "stopped",
+			Mode:      d.config,
+			UpdatedAt: time.Now().Unix(),
+		})
+	}
+
 	return d.record(ctx, Event{Type: "daemon.stopped", Source: "daemon"})
 }
 
@@ -71,10 +99,16 @@ func (d *Daemon) Events() []Event {
 	return out
 }
 
-func (d *Daemon) Config() string {
+func (d *Daemon) ConfigString() string {
 	d.mu.RLock()
 	defer d.mu.RUnlock()
 	return d.config
+}
+
+func (d *Daemon) Storage() storage.StorageProvider {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.store
 }
 
 func (d *Daemon) record(ctx context.Context, event Event) error {
@@ -90,6 +124,15 @@ func (d *Daemon) record(ctx context.Context, event Event) error {
 	d.events = append(d.events, event)
 	if len(d.events) > d.maxEvents {
 		d.events = d.events[len(d.events)-d.maxEvents:]
+	}
+
+	if d.store != nil {
+		_ = d.store.AppendAuditLog(ctx, storage.AuditEntry{
+			Timestamp: time.Now().Unix(),
+			Action:    event.Type,
+			Source:    event.Source,
+			Detail:    fmt.Sprintf("%v", event.Payload),
+		})
 	}
 
 	return d.runtime.emit(ctx, event)

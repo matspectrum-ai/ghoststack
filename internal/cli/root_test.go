@@ -31,9 +31,9 @@ func TestRootCommandHelp(t *testing.T) {
 
 func TestStartCommand(t *testing.T) {
 	cmd := newStartCommand()
-	_, err := executeCommand(cmd)
+	_, err := executeCommand(cmd, "--help")
 	if err != nil {
-		t.Fatalf("start: %v", err)
+		t.Fatalf("start --help: %v", err)
 	}
 }
 

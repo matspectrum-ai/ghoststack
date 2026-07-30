@@ -1,0 +1,32 @@
+# Binaries
+bin/
+dist/
+tmp/
+*.exe
+*.test
+*.out
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Coverage
+coverage.out
+coverage.html
+
+# Docker
+docker-compose.yml
+
+# Planning docs (not needed in image)
+.planning/
+docs/
