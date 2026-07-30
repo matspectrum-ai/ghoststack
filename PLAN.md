@@ -87,7 +87,7 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - Rollback automático
 - Update Manifest
 
-### FASE 12 — Provider Hardening
+### FASE 12 — Provider Hardening ✅
 - OpenVPN provider
 - DoH/DoT DNS providers
 - Firewall real (nftables/iptables/pf)

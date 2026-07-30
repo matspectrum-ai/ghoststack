@@ -15,6 +15,9 @@ func NewRootCommand() *cobra.Command {
 	cmd.AddCommand(newStatusCommand())
 	cmd.AddCommand(newDiagnoseCommand())
 	cmd.AddCommand(newSecurityCommand())
+	cmd.AddCommand(newPluginCommand())
+	cmd.AddCommand(newConfigCommand())
+	cmd.AddCommand(newProviderCommand())
 	cmd.AddCommand(newUpdateCommand())
 
 	return cmd
