@@ -1,7 +1,8 @@
-export interface StatusResponse {
-  state: string
-  uptime: string
-  config: string
+export interface LogEntry {
+  id: string
+  timestamp: string
+  level: string
+  message: string
 }
 
 export interface MonitoringResponse {
@@ -13,11 +14,10 @@ export interface MonitoringResponse {
   }
 }
 
-export interface LogEntry {
-  id: string
-  timestamp: string
-  level: string
-  message: string
+export interface StatusResponse {
+  state: string
+  uptime: string
+  config: string
 }
 
 const API_BASE = '/api'
