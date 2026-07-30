@@ -1,7 +1,25 @@
 # GhostStack — Implementation Plan
 
 Versão: 0.1.0
-Status: Draft
+Status: Em andamento
+
+## Progresso
+
+### Concluído
+- FASE 0 — Foundation
+- FASE 1 — Core Runtime
+- FASE 2 — Configuration Engine
+- FASE 3 — Networking Engine
+- FASE 4 — Security Engine
+- FASE 5 — Providers
+- FASE 6 — CLI
+
+### Em andamento
+- FASE 7 — Dashboard
+
+### Próximo
+- FASE 8 — Distribution
+- FASE 9 — Hardening
 Branch: master
 Última revisão: plan-eng-review (em andamento)
 
