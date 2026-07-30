@@ -1,7 +1,7 @@
 # GhostStack — Implementation Plan
 
-Versão: 0.7.0
-Status: Concluído
+Versão: 0.8.0
+Status: Draft
 Branch: master
 Última revisão: autoplan (2026-07-30)
 
@@ -17,35 +17,36 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - FASEs 16-20: ✅ Concluídas (v0.4.0)
 - FASEs 21-25: ✅ Concluídas (v0.5.0)
 - FASEs 26-30: ✅ Concluídas (v0.6.0)
-- FASEs 31-35: Planejadas para v0.7.0
+- FASEs 31-35: ✅ Concluídas (v0.7.0)
+- FASEs 36-40: Planejadas para v0.8.0
 
 ## 3. Fases
 
-### FASE 31 — LTS Preparation
-- Long-term support policy
-- Security backports
-- Maintenance mode
-- End-of-life planning
+### FASE 36 — Long-term Stability
+- Security patches
+- Bug fixes
+- Performance improvements
+- Backward compatibility
 
-### FASE 32 — Maturidade do Produto
-- UX polish
-- Accessibility
-- Internationalization
-- Theme support
+### FASE 37 — UX Polish
+- Design system
+- Component library
+- Accessibility improvements
+- Performance optimization
 
-### FASE 33 — Marketplace & Integrações
-- Curated plugins
+### FASE 38 — Ecossistema
+- Plugin SDK improvements
 - Integration catalog
-- Compatibility matrix
-- Upgrade guides
+- Template gallery
+- Community support
 
-### FASE 34 — Operações
-- Advanced monitoring
+### FASE 39 — Operações
+- Monitoring improvements
+- Alerting enhancements
 - Capacity planning
 - Cost optimization
-- Performance tuning
 
-### FASE 35 — Documentação
+### FASE 40 — Documentação
 - Complete API reference
 - Architecture diagrams
 - Runbooks
@@ -69,7 +70,8 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ## 6. Próximos Passos
 
-- Iniciar próxima milestone
+- Iniciar FASE 36 — Long-term Stability
+- Continuar execução do milestone v0.8.0
 
 ## GSTACK REVIEW REPORT
 
@@ -101,5 +103,5 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ### Aprovação
 - **Status:** Aprovado para execução
-- **Próximo milestone:** v0.7.0 (FASEs 31-35)
-- **Comando:** `/gsd-new-milestone v0.7.0`
+- **Próximo milestone:** v0.8.0
+- **Comando:** `/gsd-new-milestone v0.8.0`
