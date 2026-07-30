@@ -47,7 +47,12 @@ func (a *auditLogger) List(ctx context.Context, limit int) ([]AuditEntry, error)
 		limit = len(a.entries)
 	}
 
+	start := len(a.entries) - limit
+	if start < 0 {
+		start = 0
+	}
+
 	out := make([]AuditEntry, limit)
-	copy(out, a.entries[:limit])
+	copy(out, a.entries[start:])
 	return out, nil
 }

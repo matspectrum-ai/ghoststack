@@ -72,18 +72,22 @@ func (l *StructuredAuditLogger) List(ctx context.Context, limit int) ([]Structur
 }
 
 func (l *StructuredAuditLogger) flush() error {
-	f, err := os.OpenFile(l.output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	remaining := l.entries
+	l.entries = nil
+
+	f, err := os.OpenFile(l.output, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 	if err != nil {
+		l.entries = append(l.entries, remaining...)
 		return err
 	}
 	defer f.Close()
 
 	enc := json.NewEncoder(f)
-	for _, entry := range l.entries {
+	for _, entry := range remaining {
 		if err := enc.Encode(entry); err != nil {
+			l.entries = append(remaining, l.entries...)
 			return err
 		}
 	}
-	l.entries = nil
 	return nil
 }

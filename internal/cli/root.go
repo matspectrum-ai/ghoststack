@@ -19,6 +19,7 @@ func NewRootCommand() *cobra.Command {
 	cmd.AddCommand(newConfigCommand())
 	cmd.AddCommand(newProviderCommand())
 	cmd.AddCommand(newUpdateCommand())
+	cmd.AddCommand(newEmergencyStopCommand())
 
 	return cmd
 }

@@ -1,13 +1,13 @@
-export interface WebSocketMessage {
-  type: 'status' | 'monitoring' | 'log' | 'error'
-  payload: unknown
+export interface WSMessage {
+  type: string
+  data?: unknown
 }
 
-export type WebSocketHandler = (message: WebSocketMessage) => void
+export type WSHandler = (message: WSMessage) => void
 
 export class WebSocketService {
   private ws: WebSocket | null = null
-  private handlers: Map<string, Set<WebSocketHandler>> = new Map()
+  private handlers: Map<string, Set<WSHandler>> = new Map()
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null
   private reconnectDelay = 1000
 
@@ -25,13 +25,16 @@ export class WebSocketService {
 
       this.ws.onmessage = (event) => {
         try {
-          const message = JSON.parse(event.data) as WebSocketMessage
+          const message = JSON.parse(event.data) as WSMessage
           const handlers = this.handlers.get(message.type)
           if (handlers) {
             handlers.forEach(handler => handler(message))
           }
+          const wildcard = this.handlers.get('*')
+          if (wildcard) {
+            wildcard.forEach(handler => handler(message))
+          }
         } catch {
-          // ignore malformed messages
         }
       }
 
@@ -56,12 +59,11 @@ export class WebSocketService {
     this.ws = null
   }
 
-  on(type: string, handler: WebSocketHandler): () => void {
+  on(type: string, handler: WSHandler): () => void {
     if (!this.handlers.has(type)) {
       this.handlers.set(type, new Set())
     }
     this.handlers.get(type)!.add(handler)
-
     return () => {
       this.handlers.get(type)?.delete(handler)
     }

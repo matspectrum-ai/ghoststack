@@ -1,19 +1,33 @@
-import { useEffect, useState } from 'react'
-import { wsService, WebSocketMessage } from '../services/websocket'
+import { useEffect, useState, useCallback } from 'react'
+import { wsService, WSMessage } from '../services/websocket'
+
+interface ProviderStatus {
+  state: string
+  uptime: string
+  version: string
+}
+
+interface MetricsData {
+  cpu: number
+  memory: number
+  rx_bytes: number
+  tx_bytes: number
+  uptime: number
+}
 
 export function useWebSocketStatus() {
-  const [status, setStatus] = useState<{ state: string; uptime: string; config: string } | null>(null)
+  const [status, setStatus] = useState<ProviderStatus | null>(null)
 
   useEffect(() => {
-    const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`
+    const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/ws`
     wsService.connect(wsUrl)
 
-    const unsubscribe = wsService.on('status', (message: WebSocketMessage) => {
-      setStatus(message.payload as { state: string; uptime: string; config: string })
+    const unsub = wsService.on('provider_status', (msg: WSMessage) => {
+      setStatus(msg.data as ProviderStatus)
     })
 
     return () => {
-      unsubscribe()
+      unsub()
       wsService.disconnect()
     }
   }, [])
@@ -21,34 +35,79 @@ export function useWebSocketStatus() {
   return status
 }
 
-export function useWebSocketMonitoring() {
-  const [monitoring, setMonitoring] = useState<{ cpu: number; memory: number; network: { in: number; out: number } } | null>(null)
+export function useWebSocketMetrics() {
+  const [metrics, setMetrics] = useState<MetricsData | null>(null)
 
   useEffect(() => {
-    const unsubscribe = wsService.on('monitoring', (message: WebSocketMessage) => {
-      setMonitoring(message.payload as { cpu: number; memory: number; network: { in: number; out: number } })
+    const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/ws`
+    wsService.connect(wsUrl)
+
+    const unsub = wsService.on('metrics', (msg: WSMessage) => {
+      setMetrics(msg.data as MetricsData)
     })
 
     return () => {
-      unsubscribe()
+      unsub()
     }
   }, [])
 
-  return monitoring
+  return metrics
 }
 
 export function useWebSocketLogs() {
   const [logs, setLogs] = useState<{ id: string; timestamp: string; level: string; message: string }[]>([])
 
   useEffect(() => {
-    const unsubscribe = wsService.on('log', (message: WebSocketMessage) => {
-      setLogs(prev => [message.payload as { id: string; timestamp: string; level: string; message: string }, ...prev].slice(0, 100))
+    const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/ws`
+    wsService.connect(wsUrl)
+
+    const unsub = wsService.on('log', (msg: WSMessage) => {
+      const entry = msg.data as { id: string; timestamp: string; level: string; message: string }
+      setLogs(prev => [entry, ...prev].slice(0, 100))
     })
 
     return () => {
-      unsubscribe()
+      unsub()
     }
   }, [])
 
   return logs
+}
+
+export function useWebSocketAll() {
+  const [lastMessage, setLastMessage] = useState<WSMessage | null>(null)
+
+  useEffect(() => {
+    const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/ws`
+    wsService.connect(wsUrl)
+
+    const unsub = wsService.on('*', (msg: WSMessage) => {
+      setLastMessage(msg)
+    })
+
+    return () => {
+      unsub()
+    }
+  }, [])
+
+  return lastMessage
+}
+
+export function usePolling<T>(fetcher: () => Promise<T>, interval = 3000) {
+  const [data, setData] = useState<T | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchData = useCallback(() => {
+    fetcher()
+      .then(setData)
+      .catch(e => setError(e.message))
+  }, [fetcher])
+
+  useEffect(() => {
+    fetchData()
+    const timer = setInterval(fetchData, interval)
+    return () => clearInterval(timer)
+  }, [fetchData, interval])
+
+  return { data, error }
 }

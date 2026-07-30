@@ -1,77 +1,52 @@
-import { useEffect, useState } from 'react'
-import { fetchMonitoring } from '../services/api'
-import { useWebSocketMonitoring } from '../hooks/useWebSocket'
-
-interface Monitoring {
-  cpu: number
-  memory: number
-  network: { in: number; out: number }
-}
+import { useWebSocketMetrics } from '../hooks/useWebSocket'
+import TrafficChart from './TrafficChart'
+import PeerList from './PeerList'
+import AlertPanel from './AlertPanel'
 
 export default function MonitoringScreen() {
-  const [monitoring, setMonitoring] = useState<Monitoring | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const wsMonitoring = useWebSocketMonitoring()
-
-  useEffect(() => {
-    fetchMonitoring()
-      .then(setMonitoring)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [])
-
-  useEffect(() => {
-    if (wsMonitoring) {
-      setMonitoring(wsMonitoring)
-      setError(null)
-    }
-  }, [wsMonitoring])
-
-  if (error && !monitoring) {
-    return (
-      <div className="screen">
-        <h2>Monitoramento</h2>
-        <div className="error">Erro: {error}</div>
-      </div>
-    )
-  }
-
-  if (loading && !monitoring) {
-    return (
-      <div className="screen">
-        <h2>Monitoramento</h2>
-        <div className="loading">Carregando...</div>
-      </div>
-    )
-  }
-
-  if (!monitoring) {
-    return (
-      <div className="screen">
-        <h2>Monitoramento</h2>
-        <div className="loading">Carregando...</div>
-      </div>
-    )
-  }
+  const metrics = useWebSocketMetrics()
 
   return (
     <div className="screen">
       <h2>Monitoramento</h2>
+
       <div className="monitoring-grid">
-        <div className="monitoring-card">
-          <span className="monitoring-label">CPU</span>
-          <span className="monitoring-value">{monitoring.cpu.toFixed(1)}%</span>
-        </div>
-        <div className="monitoring-card">
-          <span className="monitoring-label">Memória</span>
-          <span className="monitoring-value">{monitoring.memory.toFixed(1)}%</span>
-        </div>
-        <div className="monitoring-card">
-          <span className="monitoring-label">Rede</span>
-          <span className="monitoring-value">{monitoring.network.in.toFixed(1)} / {monitoring.network.out.toFixed(1)} MB/s</span>
-        </div>
+        {metrics && (
+          <div className="card">
+            <h3>Recursos</h3>
+            <div className="metrics-row">
+              <div className="metric big">
+                <span className="num">{metrics.cpu.toFixed(1)}%</span>
+                <span className="lbl">CPU</span>
+              </div>
+              <div className="metric big">
+                <span className="num">{fmtBytes(metrics.memory)}</span>
+                <span className="lbl">RAM</span>
+              </div>
+              <div className="metric big">
+                <span className="num">{fmtBytes(metrics.rx_bytes)}/s</span>
+                <span className="lbl">Download</span>
+              </div>
+              <div className="metric big">
+                <span className="num">{fmtBytes(metrics.tx_bytes)}/s</span>
+                <span className="lbl">Upload</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <TrafficChart />
       </div>
+
+      <PeerList />
+      <AlertPanel />
     </div>
   )
+}
+
+function fmtBytes(b: number): string {
+  if (b >= 1 << 30) return (b / (1 << 30)).toFixed(1) + ' GB'
+  if (b >= 1 << 20) return (b / (1 << 20)).toFixed(1) + ' MB'
+  if (b >= 1 << 10) return (b / (1 << 10)).toFixed(0) + ' KB'
+  return b + ' B'
 }

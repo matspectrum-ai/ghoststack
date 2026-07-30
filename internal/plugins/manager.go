@@ -84,17 +84,16 @@ func (m *pluginManager) Load(ctx context.Context, pluginPath string) (Plugin, er
 		return nil, fmt.Errorf("validate manifest: %w", err)
 	}
 
-	loader := &defaultPluginLoader{}
-	plugin, err := loader.Load(pluginPath)
+	plugin, err := (&subprocessPluginLoader{}).Load(pluginPath)
 	if err != nil {
 		return nil, fmt.Errorf("load plugin: %w", err)
 	}
 
-	m.plugins[pluginPath] = &pluginEntry{
+	m.plugins[manifest.ID] = &pluginEntry{
 		state:   PluginStateLoaded,
 		plugin:  plugin,
 		manifest: manifest,
-		loader:  loader,
+		loader:  &defaultPluginLoader{},
 	}
 
 	return plugin, nil
@@ -108,7 +107,7 @@ func (m *pluginManager) Initialize(ctx context.Context, plugin Plugin) error {
 	manifest := plugin.Manifest()
 
 	m.mu.Lock()
-	entry, exists := m.plugins[manifest.Entry]
+	entry, exists := m.plugins[manifest.ID]
 	m.mu.Unlock()
 
 	if !exists {
@@ -242,7 +241,8 @@ func (v *defaultValidator) Validate(manifest PluginManifest) error {
 type defaultPluginLoader struct{}
 
 func (l *defaultPluginLoader) Load(path string) (Plugin, error) {
-	return nil, fmt.Errorf("plugin loading not implemented: %s", path)
+	loader := &subprocessPluginLoader{}
+	return loader.Load(path)
 }
 
 func manifestPathFor(path string) string {

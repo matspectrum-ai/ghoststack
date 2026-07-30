@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-30
+
+### Added
+- FASE R1 — WireGuard Real: TUN via /dev/net/tun+ioctl, firewall nft/iptables, DNS resolvectl/resolv.conf, wg-quick lifecycle
+- FASE R2 — Provider Engine: 5 providers (WireGuard, Tor, sing-box, Unbound, SOCKS5 inline)
+- FASE R3 — Plugin Loader + Sandbox: subprocess IPC via Unix socket, seccomp-bpf with syscall whitelist
+- FASE R4 — WebSocket + Monitoramento: WSHub com broadcast push, MetricsCollector com /proc, SSE endpoint, dashboard com gráficos
+- FASE R5 — Segurança Real: kill switch iptables/nft integrado ao WireGuard, SHA-256 binary verification, secret rotation com audit trail
+
+### Changed
+- CLI: `ghost init` com template YAML, `ghost emergency-stop`, `ghost diagnose --force`, `ghost start --provider`
+- API: WebSocket em `/api/ws`, SSE em `/api/events`, POST `/api/config`
+- Dashboard: ProviderStatus bar, TrafficChart SVG, PeerList, AlertPanel, ConfigScreen com WireGuard form
+
+### Fixed
+- seccomp `unsafePtr` retornava NULL → sandbox era no-op
+- SOCKS5 address parsing (RSV+ATYP como port) + relay deadlock
+- TUN netmask negative shift panic, address offset errado, interface leak
+- Firewall command injection via `sh -c`, stdin não pipeado, erros ignorados
+- HTTP server shutdown em 2s
+- Plugin IPC: deadlock Unload→Disable, socket fechado antes do subprocesso
+- Process state race (Stop sobrescrito por wait goroutine)
+- Monitoramento coletava /proc real
+- Audit flush duplicava entradas em erro
+- Kill switch com trigger stub → agora chama firewall real
+
 ## [0.2.0] - 2026-07-30
 
 ### Added

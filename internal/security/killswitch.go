@@ -7,3 +7,7 @@ type KillSwitch interface {
 	Disable(ctx context.Context) error
 	Active() bool
 }
+
+func NewKillSwitch(iface string) KillSwitch {
+	return newKillSwitch(iface)
+}

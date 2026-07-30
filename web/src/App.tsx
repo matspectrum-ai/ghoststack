@@ -5,6 +5,7 @@ import MonitoringScreen from './components/MonitoringScreen'
 import ConfigScreen from './components/ConfigScreen'
 import LogsScreen from './components/LogsScreen'
 import RegisterSW from './components/RegisterSW'
+import ProviderStatus from './components/ProviderStatus'
 
 type Tab = 'status' | 'monitoring' | 'config' | 'logs'
 
@@ -36,6 +37,8 @@ export default function App() {
           </button>
         ))}
       </nav>
+
+      <ProviderStatus />
 
       <main className="app-main">
         {tab === 'status' && <StatusScreen />}
