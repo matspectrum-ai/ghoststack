@@ -1,7 +1,7 @@
 # GhostStack — Implementation Plan
 
 Versão: 0.5.0
-Status: Draft
+Status: Concluído
 Branch: master
 Última revisão: autoplan (2026-07-30)
 
@@ -15,43 +15,39 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - FASEs 0-9: ✅ Concluídas (v0.2.0)
 - FASEs 10-15: ✅ Concluídas (v0.3.0)
 - FASEs 16-20: ✅ Concluídas (v0.4.0)
+- FASEs 21-25: Planejadas para v0.5.0
 
 ## 3. Fases
 
-### FASE 16 — Performance & Optimization ✅
-- Perfil de memória com pprof
-- Startup time optimization
-- Benchmark suite contínua
-- Hot path profiling
-- Memory pool reutilização
+### FASE 21 — Production Readiness
+- Health checks robustos
+- Graceful shutdown
+- Resource limits
+- Crash recovery automático
 
-### FASE 17 — Security Hardening ✅
-- Audit logging estruturado (JSON)
-- Plugin sandboxing
-- Integrity checking com hash
-- Secure boot do daemon
-- Secret rotation
+### FASE 22 — Plugin Marketplace
+- Registry público
+- Versionamento semântico
+- Dependency resolution
+- Plugin signing
 
-### FASE 18 — Cross-Platform Real ✅
-- Windows WFP firewall
-- macOS pf + NetworkExtension
-- Linux nftables + tun
-- Build matrix GitHub Actions
-- Platform abstraction layer
+### FASE 23 — Observabilidade Avançada
+- Distributed tracing
+- Custom metrics
+- Alerting rules
+- Dashboards pré-configurados
 
-### FASE 19 — UX & DX Improvement ✅
-- Onboarding interativo
-- Documentação interativa
-- DX scorecard
-- Error messages melhorados
-- CLI help system
+### FASE 24 — Automação & Orquestração
+- Workflow engine
+- Pipeline definitions
+- Scheduled tasks
+- Event-driven automation
 
-### FASE 20 — Integration & Ecosystem ✅
-- REST API pública
-- TypeScript SDK
-- Webhook system
-- CLI scripting
-- Plugin marketplace preparação
+### FASE 25 — Documentação & Suporte
+- Guias interativos
+- Exemplos reproduzíveis
+- Troubleshooting guides
+- API reference completo
 
 
 ## 4. Critérios de Aceitação
@@ -71,7 +67,8 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ## 6. Próximos Passos
 
-- Iniciar próxima milestone
+- Iniciar FASE 21 — Production Readiness
+- Continuar execução do milestone v0.5.0
 
 ## GSTACK REVIEW REPORT
 
@@ -103,5 +100,5 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ### Aprovação
 - **Status:** Aprovado para execução
-- **Próximo milestone:** v0.5.0
+- **Próximo milestone:** v0.5.0 (FASEs 21-25)
 - **Comando:** `/gsd-new-milestone v0.5.0`
