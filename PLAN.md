@@ -1,7 +1,7 @@
 # GhostStack — Implementation Plan
 
 Versão: 0.3.0
-Status: Draft
+Status: Concluído
 Branch: master
 Última revisão: autoplan (2026-07-30)
 
@@ -13,7 +13,7 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 ## 2. Escopo
 
 - FASEs 0-9: ✅ Concluídas (v0.2.0)
-- FASEs 10-15: Planejadas para v0.3.0
+- FASEs 10-15: ✅ Concluídas (v0.3.0)
 
 ## 3. Fases
 
@@ -93,19 +93,20 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - Firewall real (nftables/iptables/pf)
 - Health checks e fallback automático
 
-### FASE 13 — Event Bus & Observability
+### FASE 13 — Event Bus & Observability ✅
 - Event bus real (pub/sub)
 - OpenTelemetry básico
 - Métricas Prometheus
 - Tracing distribuído
+- Correlation ID e middleware
 
-### FASE 14 — CLI Expansion
+### FASE 14 — CLI Expansion ✅
 - ghost plugin install/remove/update
 - ghost config validate/reload
 - ghost provider list/select
 - ghost update --dry-run/rollback
 
-### FASE 15 — Dashboard Hardening
+### FASE 15 — Dashboard Hardening ✅
 - WebSocket para eventos real-time
 - Telas de configuração e logs funcionais
 - Mobile responsive
@@ -128,8 +129,7 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ## 6. Próximos Passos
 
-- Iniciar FASE 12 — Provider Hardening
-- Continuar execução do milestone v0.3.0
+- Iniciar próxima milestone
 
 ## GSTACK REVIEW REPORT
 
@@ -161,5 +161,5 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 
 ### Aprovação
 - **Status:** Aprovado para execução
-- **Próximo milestone:** v0.3.0 (FASEs 10-12)
-- **Comando:** `/gsd-new-milestone v0.3.0`
+- **Próximo milestone:** v0.4.0 (FASEs 16+)
+- **Comando:** `/gsd-new-milestone v0.4.0`
