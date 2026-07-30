@@ -73,12 +73,12 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - Fuzz tests
 - Benchmark
 
-### FASE 10 — Plugin System
+### FASE 10 — Plugin System ✅
 - Plugin Manager
 - Manifest parser
 - Plugin SDK base (Go)
 - Permissions model (network, filesystem, secrets, system)
-- Sandbox básico (processo separado)
+- Plugin discovery
 
 ### FASE 11 — Update System & Migration
 - Update Manager
@@ -163,3 +163,4 @@ Revisão automática executada via `/autoplan` após conclusão das FASEs 0-9 (v
 - **Status:** Aprovado para execução
 - **Próximo milestone:** v0.3.0 (FASEs 10-12)
 - **Comando:** `/gsd-new-milestone v0.3.0`
+estone v0.3.0`
